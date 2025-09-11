@@ -2,9 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connection from './src/config/mongodb-connect.js';
 
-import customerRoutes from './src/routes/customer.router.js';
-import accountRoutes from './src/routes/account.router.js';
-import transactionRoutes from './src/routes/transaction.router.js';
+import customerRoutes from './src/routes/customer.routes.js';
+import accountRoutes from './src/routes/account.routes.js';
+import transactionRoutes from './src/routes/transaction.routes.js';
 
 dotenv.config();
 const app = express();

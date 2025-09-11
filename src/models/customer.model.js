@@ -18,7 +18,7 @@ const customerSchema = new mongoose.Schema({
     accounts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account'
-    }]
+    }],
 }, {
     timestamps: true
 });
