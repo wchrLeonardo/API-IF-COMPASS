@@ -20,7 +20,7 @@ Customer:
       type: string
       description: CPF do cliente (somente números)
       example: "12345678901"
-      pattern: '^[0-9]{11}$'
+      pattern: "^[0-9]{11}$"
     email:
       type: string
       format: email
@@ -63,7 +63,7 @@ CustomerRequest:
       type: string
       description: CPF do cliente (somente números)
       example: "12345678901"
-      pattern: '^[0-9]{11}$'
+      pattern: "^[0-9]{11}$"
     email:
       type: string
       format: email
@@ -83,7 +83,7 @@ CustomerUpdateRequest:
       type: string
       description: CPF do cliente (somente números)
       example: "12345678901"
-      pattern: '^[0-9]{11}$'
+      pattern: "^[0-9]{11}$"
     email:
       type: string
       format: email
@@ -96,7 +96,7 @@ CustomersPaginated:
     docs:
       type: array
       items:
-        $ref: '#/Customer'
+        $ref: "#/Customer"
       description: Lista de clientes na página atual
     totalDocs:
       type: integer

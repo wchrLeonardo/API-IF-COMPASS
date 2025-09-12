@@ -19,7 +19,7 @@ Transaction:
     type:
       type: string
       description: Tipo da transação
-      enum: ['credit', 'debit']
+      enum: ["credit", "debit"]
       example: "credit"
     description:
       type: string
@@ -63,7 +63,7 @@ TransactionRequest:
     type:
       type: string
       description: Tipo da transação
-      enum: ['credit', 'debit']
+      enum: ["credit", "debit"]
       example: "credit"
     description:
       type: string
@@ -82,7 +82,7 @@ TransactionsPaginated:
     docs:
       type: array
       items:
-        $ref: '#/Transaction'
+        $ref: "#/Transaction"
       description: Lista de transações na página atual
     totalDocs:
       type: integer

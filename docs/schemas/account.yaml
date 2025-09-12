@@ -14,7 +14,7 @@ Account:
     type:
       type: string
       description: Tipo da conta bancária
-      enum: ['checking', 'savings']
+      enum: ["checking", "savings"]
       example: "checking"
     branch:
       type: string
@@ -65,7 +65,7 @@ AccountRequest:
     type:
       type: string
       description: Tipo da conta bancária
-      enum: ['checking', 'savings']
+      enum: ["checking", "savings"]
       example: "checking"
     branch:
       type: string
@@ -86,7 +86,7 @@ AccountUpdateRequest:
     type:
       type: string
       description: Tipo da conta bancária
-      enum: ['checking', 'savings']
+      enum: ["checking", "savings"]
       example: "checking"
     branch:
       type: string
@@ -103,7 +103,7 @@ AccountsPaginated:
     docs:
       type: array
       items:
-        $ref: '#/Account'
+        $ref: "#/Account"
       description: Lista de contas na página atual
     totalDocs:
       type: integer
