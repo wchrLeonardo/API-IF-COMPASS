@@ -1,0 +1,167 @@
+Consent:
+  type: object
+  required:
+    - customer
+    - permissions
+    - currentAccount
+  properties:
+    id:
+      type: string
+      description: ID único do consentimento (auto-gerado)
+      example: "con_001"
+      readOnly: true
+    customer:
+      type: string
+      description: ID do cliente que concede o consentimento
+      example: "cus_001"
+    status:
+      type: string
+      description: Status atual do consentimento
+      enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED']
+      example: "AUTHORIZED"
+      default: "UNAUTHORIZED"
+    permissions:
+      type: array
+      description: Lista de permissões concedidas
+      items:
+        type: string
+        enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
+      example: ["ACCOUNTS_READ", "BALANCES_READ"]
+      minItems: 1
+    expirationDateTime:
+      type: string
+      format: date-time
+      description: Data e hora de expiração do consentimento
+      example: "2025-01-15T10:30:00Z"
+      default: "Auto-gerado para 1 ano no futuro"
+    currentAccount:
+      type: string
+      description: ID da conta principal do consentimento
+      example: "acc_001"
+    sourceAccounts:
+      type: array
+      description: Lista de contas de origem autorizadas
+      items:
+        type: string
+      example: ["acc_001", "acc_002"]
+    createdAt:
+      type: string
+      format: date-time
+      description: Data de criação do consentimento
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Data da última atualização
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+
+ConsentRequest:
+  type: object
+  required:
+    - customer
+    - permissions
+    - currentAccount
+  properties:
+    customer:
+      type: string
+      description: ID do cliente que concede o consentimento
+      example: "cus_001"
+    permissions:
+      type: array
+      description: Lista de permissões solicitadas
+      items:
+        type: string
+        enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
+      example: ["ACCOUNTS_READ", "BALANCES_READ"]
+      minItems: 1
+    currentAccount:
+      type: string
+      description: ID da conta principal do consentimento
+      example: "acc_001"
+    sourceAccounts:
+      type: array
+      description: Lista de contas de origem (opcional)
+      items:
+        type: string
+      example: ["acc_001", "acc_002"]
+    expirationDateTime:
+      type: string
+      format: date-time
+      description: Data de expiração customizada (opcional)
+      example: "2025-06-15T10:30:00Z"
+
+ConsentUpdateRequest:
+  type: object
+  properties:
+    status:
+      type: string
+      description: Novo status do consentimento
+      enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED']
+      example: "AUTHORIZED"
+    permissions:
+      type: array
+      description: Lista atualizada de permissões
+      items:
+        type: string
+        enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
+      example: ["ACCOUNTS_READ", "BALANCES_READ", "TRANSACTIONS_READ"]
+    expirationDateTime:
+      type: string
+      format: date-time
+      description: Nova data de expiração
+      example: "2025-12-15T10:30:00Z"
+    sourceAccounts:
+      type: array
+      description: Lista atualizada de contas autorizadas
+      items:
+        type: string
+      example: ["acc_001", "acc_003"]
+
+ConsentsPaginated:
+  type: object
+  properties:
+    docs:
+      type: array
+      items:
+        $ref: '#/Consent'
+      description: Lista de consentimentos na página atual
+    totalDocs:
+      type: integer
+      description: Total de documentos encontrados
+      example: 75
+    limit:
+      type: integer
+      description: Número máximo de itens por página
+      example: 10
+    totalPages:
+      type: integer
+      description: Total de páginas
+      example: 8
+    page:
+      type: integer
+      description: Página atual
+      example: 1
+    pagingCounter:
+      type: integer
+      description: Contador sequencial da paginação
+      example: 1
+    hasPrevPage:
+      type: boolean
+      description: Indica se há página anterior
+      example: false
+    hasNextPage:
+      type: boolean
+      description: Indica se há próxima página
+      example: true
+    prevPage:
+      type: integer
+      nullable: true
+      description: Número da página anterior
+      example: null
+    nextPage:
+      type: integer
+      nullable: true
+      description: Número da próxima página
+      example: 2

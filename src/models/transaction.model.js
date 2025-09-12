@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import autoIncrementId from "../plugins/custom-auto-increment-id.plugin.js";
 
 const transactionSchema = new mongoose.Schema({
   amount: {
@@ -24,6 +25,10 @@ const transactionSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+transactionSchema.plugin(autoIncrementId, { 
+    modelName: 'Transaction', prefix: 'txn_', paddingLength: 3 
 });
 
 const Transaction = mongoose.model("Transaction", transactionSchema);

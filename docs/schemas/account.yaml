@@ -1,0 +1,145 @@
+Account:
+  type: object
+  required:
+    - type
+    - branch
+    - number
+    - owner
+  properties:
+    id:
+      type: string
+      description: ID único da conta (auto-gerado)
+      example: "acc_001"
+      readOnly: true
+    type:
+      type: string
+      description: Tipo da conta bancária
+      enum: ['checking', 'savings']
+      example: "checking"
+    branch:
+      type: string
+      description: Agência da conta
+      example: "1234"
+    number:
+      type: string
+      description: Número único da conta
+      example: "567890"
+    balance:
+      type: number
+      description: Saldo atual da conta
+      example: 1500.50
+      default: 0
+      readOnly: true
+    owner:
+      type: string
+      description: ID do cliente proprietário da conta
+      example: "cus_001"
+    transactions:
+      type: array
+      description: Lista de transações da conta
+      items:
+        type: string
+      example: ["txn_001", "txn_002"]
+      readOnly: true
+    createdAt:
+      type: string
+      format: date-time
+      description: Data de criação da conta
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Data da última atualização
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+
+AccountRequest:
+  type: object
+  required:
+    - type
+    - branch
+    - number
+    - owner
+  properties:
+    type:
+      type: string
+      description: Tipo da conta bancária
+      enum: ['checking', 'savings']
+      example: "checking"
+    branch:
+      type: string
+      description: Agência da conta
+      example: "1234"
+    number:
+      type: string
+      description: Número único da conta
+      example: "567890"
+    owner:
+      type: string
+      description: ID do cliente proprietário da conta
+      example: "cus_001"
+
+AccountUpdateRequest:
+  type: object
+  properties:
+    type:
+      type: string
+      description: Tipo da conta bancária
+      enum: ['checking', 'savings']
+      example: "checking"
+    branch:
+      type: string
+      description: Agência da conta
+      example: "1234"
+    number:
+      type: string
+      description: Número único da conta
+      example: "567890"
+
+AccountsPaginated:
+  type: object
+  properties:
+    docs:
+      type: array
+      items:
+        $ref: '#/Account'
+      description: Lista de contas na página atual
+    totalDocs:
+      type: integer
+      description: Total de documentos encontrados
+      example: 50
+    limit:
+      type: integer
+      description: Número máximo de itens por página
+      example: 10
+    totalPages:
+      type: integer
+      description: Total de páginas
+      example: 5
+    page:
+      type: integer
+      description: Página atual
+      example: 1
+    pagingCounter:
+      type: integer
+      description: Contador sequencial da paginação
+      example: 1
+    hasPrevPage:
+      type: boolean
+      description: Indica se há página anterior
+      example: false
+    hasNextPage:
+      type: boolean
+      description: Indica se há próxima página
+      example: true
+    prevPage:
+      type: integer
+      nullable: true
+      description: Número da página anterior
+      example: null
+    nextPage:
+      type: integer
+      nullable: true
+      description: Número da próxima página
+      example: 2

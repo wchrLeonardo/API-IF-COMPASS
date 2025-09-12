@@ -1,9 +1,8 @@
 import transactionService from '../services/transaction.service.js';
-import { ApiError } from '../exceptions/api-errors.js';
 
 class TransactionController {
 
-    create = async (req, res) => {
+    create = async (req, res, next) => {
         try {
             const transactionData = req.body;
             const { id_account } = req.params;
@@ -14,29 +13,21 @@ class TransactionController {
             const newTransaction = await transactionService.createTransaction(id_account, transactionData);
             res.status(201).json(newTransaction);
         } catch (error) {
-            if (error instanceof ApiError) {
-                return res.status(error.statusCode).json({ message: error.message });
-            }
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+            next(error);
         }
     }
 
-    getById = async (req, res) => {
+    getById = async (req, res, next) => {
         try {
             const { id } = req.params;
             const transaction = await transactionService.getTransactionById(id);
             res.status(200).json(transaction);
         } catch (error) {
-            if (error instanceof ApiError) {
-                return res.status(error.statusCode).json({ message: error.message });
-            }
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
+            next(error);
+        };
     }
 
-    getAllByAccountId = async (req, res) => {
+    getAllByAccountId = async (req, res, next) => {
         try {
             const { id_account } = req.params;
             const page = parseInt(req.query.page) || 1;
@@ -44,11 +35,7 @@ class TransactionController {
             const transactions = await transactionService.getAllTransactionsByAccountId(id_account, page, limit);
             res.status(200).json(transactions);
         } catch (error) {
-            if (error instanceof ApiError) {
-                return res.status(error.statusCode).json({ message: error.message });
-            }
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+            next(error);
         }
     }
 }

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import autoIncrementId from "../plugins/custom-auto-increment-id.plugin.js";
 
 const customerSchema = new mongoose.Schema({
     name: {
@@ -21,6 +22,10 @@ const customerSchema = new mongoose.Schema({
     }],
 }, {
     timestamps: true
+});
+
+customerSchema.plugin(autoIncrementId, { 
+    modelName: 'Customer', prefix: 'cus_', paddingLength: 3 
 });
 
 const Customer = mongoose.model("Customer", customerSchema);

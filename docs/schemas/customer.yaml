@@ -1,0 +1,138 @@
+Customer:
+  type: object
+  required:
+    - name
+    - cpf
+    - email
+  properties:
+    id:
+      type: string
+      description: ID único do cliente (auto-gerado)
+      example: "cus_001"
+      readOnly: true
+    name:
+      type: string
+      description: Nome completo do cliente
+      example: "João Silva Santos"
+      minLength: 2
+      maxLength: 100
+    cpf:
+      type: string
+      description: CPF do cliente (somente números)
+      example: "12345678901"
+      pattern: '^[0-9]{11}$'
+    email:
+      type: string
+      format: email
+      description: Email único do cliente
+      example: "joao.silva@email.com"
+    accounts:
+      type: array
+      description: Lista de contas associadas ao cliente
+      items:
+        type: string
+      example: ["acc_001", "acc_002"]
+      readOnly: true
+    createdAt:
+      type: string
+      format: date-time
+      description: Data de criação do registro
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Data da última atualização
+      example: "2024-01-15T10:30:00Z"
+      readOnly: true
+
+CustomerRequest:
+  type: object
+  required:
+    - name
+    - cpf
+    - email
+  properties:
+    name:
+      type: string
+      description: Nome completo do cliente
+      example: "João Silva Santos"
+      minLength: 2
+      maxLength: 100
+    cpf:
+      type: string
+      description: CPF do cliente (somente números)
+      example: "12345678901"
+      pattern: '^[0-9]{11}$'
+    email:
+      type: string
+      format: email
+      description: Email único do cliente
+      example: "joao.silva@email.com"
+
+CustomerUpdateRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: Nome completo do cliente
+      example: "João Silva Santos"
+      minLength: 2
+      maxLength: 100
+    cpf:
+      type: string
+      description: CPF do cliente (somente números)
+      example: "12345678901"
+      pattern: '^[0-9]{11}$'
+    email:
+      type: string
+      format: email
+      description: Email único do cliente
+      example: "joao.silva@email.com"
+
+CustomersPaginated:
+  type: object
+  properties:
+    docs:
+      type: array
+      items:
+        $ref: '#/Customer'
+      description: Lista de clientes na página atual
+    totalDocs:
+      type: integer
+      description: Total de documentos encontrados
+      example: 150
+    limit:
+      type: integer
+      description: Número máximo de itens por página
+      example: 10
+    totalPages:
+      type: integer
+      description: Total de páginas
+      example: 15
+    page:
+      type: integer
+      description: Página atual
+      example: 1
+    pagingCounter:
+      type: integer
+      description: Contador sequencial da paginação
+      example: 1
+    hasPrevPage:
+      type: boolean
+      description: Indica se há página anterior
+      example: false
+    hasNextPage:
+      type: boolean
+      description: Indica se há próxima página
+      example: true
+    prevPage:
+      type: integer
+      nullable: true
+      description: Número da página anterior
+      example: null
+    nextPage:
+      type: integer
+      nullable: true
+      description: Número da próxima página
+      example: 2

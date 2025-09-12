@@ -1,0 +1,84 @@
+Error:
+  type: object
+  properties:
+    message:
+      type: string
+      description: Mensagem de erro
+      example: "Recurso não encontrado"
+    status:
+      type: integer
+      description: Código de status HTTP
+      example: 404
+
+ValidationError:
+  type: object
+  properties:
+    message:
+      type: string
+      description: Mensagem de erro de validação
+      example: "Dados obrigatórios não fornecidos"
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          field:
+            type: string
+            example: "email"
+          message:
+            type: string
+            example: "Email é obrigatório"
+
+SuccessMessage:
+  type: object
+  properties:
+    message:
+      type: string
+      description: Mensagem de sucesso
+      example: "Operação realizada com sucesso"
+    data:
+      type: object
+      description: Dados adicionais da operação
+      example: {}
+
+PaginationInfo:
+  type: object
+  properties:
+    totalDocs:
+      type: integer
+      description: Total de documentos encontrados
+      example: 150
+    limit:
+      type: integer
+      description: Número máximo de itens por página
+      example: 10
+    totalPages:
+      type: integer
+      description: Total de páginas
+      example: 15
+    page:
+      type: integer
+      description: Página atual
+      example: 1
+    pagingCounter:
+      type: integer
+      description: Contador sequencial da paginação
+      example: 1
+    hasPrevPage:
+      type: boolean
+      description: Indica se há página anterior
+      example: false
+    hasNextPage:
+      type: boolean
+      description: Indica se há próxima página
+      example: true
+    prevPage:
+      type: integer
+      nullable: true
+      description: Número da página anterior
+      example: null
+    nextPage:
+      type: integer
+      nullable: true
+      description: Número da próxima página
+      example: 2

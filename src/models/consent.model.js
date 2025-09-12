@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import autoIncrementId from '../plugins/custom-auto-increment-id.plugin.js';
 
 const consentSchema = new mongoose.Schema({
      customer: {
@@ -22,17 +23,22 @@ const consentSchema = new mongoose.Schema({
         default: () => 
             new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     },
-    source_account: {
+    currentAccount: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account',
         required: true,
     },
-    viewer_accounts: [{
+    sourceAccounts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account'
     }]
 }, { timestamps: true });
 
-const Consent = mongoose.model('Consent', consentSchema);
+consentSchema.plugin(autoIncrementId, { 
+    modelName: 'Consent', prefix: 'con_', paddingLength: 3 
+});
+
+const Consent = mongoose.model("Consent", consentSchema);
 
 export default Consent;
+

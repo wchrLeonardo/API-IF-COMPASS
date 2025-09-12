@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import autoIncrementId from "../plugins/custom-auto-increment-id.plugin.js";
 
 const accountSchema = new mongoose.Schema({
     type: {
@@ -33,6 +34,9 @@ const accountSchema = new mongoose.Schema({
     timestamps: true
 });
 
+accountSchema.plugin(autoIncrementId, { 
+    modelName: 'Account', prefix: 'acc_', paddingLength: 3 
+});
 
 const Account = mongoose.model("Account", accountSchema);
 
