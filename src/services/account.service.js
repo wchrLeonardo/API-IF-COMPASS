@@ -20,7 +20,10 @@ class AccountService {
             throw new ConflictError("Account with this number already exists");
         }
 
-        const account = await Account.create(accountData);
+        const account = await Account.create({
+            owner: owner, 
+            ...accountData
+        });
 
         await Customer.findByIdAndUpdate(owner, { $push: { accounts: account._id } });
 

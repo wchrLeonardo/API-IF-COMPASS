@@ -3,9 +3,9 @@ import consentController from '../controllers/consent.controller.js';
 
 const consentRoutes = Router();
 
-consentRoutes.post('/consents', consentController.create);
+consentRoutes.post('/consents/account/:id_account', consentController.create);
 
-consentRoutes.get('/consents/customer/:id_customer', consentController.getAllByCustomerId);
+consentRoutes.get('/consents/customer/:id_customer', consentController.getAllActiveByCustomerId);
 
 consentRoutes.get('/consents/account/:id_account', consentController.getOneByAccountId);
 

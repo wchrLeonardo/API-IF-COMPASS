@@ -58,7 +58,7 @@ class ConsentService {
         const consents = await Consent.aggregate([
             {
                 $match: { 
-                    customer: mongoose.Types.ObjectId(customerId),
+                    customer: customerId,
                     status: 'AUTHORIZED' 
                 }
             },

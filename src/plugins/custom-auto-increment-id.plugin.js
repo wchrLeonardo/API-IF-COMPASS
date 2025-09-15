@@ -24,7 +24,7 @@ function autoIncrementId(schema, options) {
                     { new: true, upsert: true }
                 );
                 const sequenceNumber = counter.seq.toString().padStart(paddingLength, '0');
-                this._id = `${prefix}_${sequenceNumber}`;
+                this._id = `${prefix}${sequenceNumber}`;
                 next();
             } catch (error) {
                 next(error);

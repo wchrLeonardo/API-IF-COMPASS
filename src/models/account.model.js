@@ -22,12 +22,12 @@ const accountSchema = new mongoose.Schema({
         default: 0
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Customer',
         required: true
     },
     transactions: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Transaction'
     }],
 }, {

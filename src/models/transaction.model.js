@@ -19,7 +19,7 @@ const transactionSchema = new mongoose.Schema({
     type: String
   },
   account: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Account',
     required: true
   }

@@ -4,11 +4,15 @@ class ConsentController {
 
     async create(req, res, next) {
         try {
-            const { consentData } = req.body;
-            if (!consentData.customer || !consentData.currentAccount || !consentData.permissions) {
-                return res.status(400).json({ message: "Consent data with customer, currentAccount, and permissions are required" });
+            const consentData = req.body;
+            const { id_account: accountId } = req.params;
+            if (!consentData.customer || !consentData.permissions) {
+                return res.status(400).json({ message: "Consent data with customer and permissions are required" });
             }
-            const consent = await consentService.createConsent(consentData);
+            const consent = await consentService.createConsent({
+                ...consentData,
+                currentAccount: accountId
+            });
             res.status(201).json(consent);
         } catch (error) {
             next(error);
@@ -23,7 +27,7 @@ class ConsentController {
             next(error);
         }
     }
-    async getAllByCustomerId(req, res, next) {
+    async getAllActiveByCustomerId(req, res, next) {
         try {
             const { id_customer: customerId } = req.params;
             const consents = await consentService.getAllActiveConsentsByCustomerId(customerId);

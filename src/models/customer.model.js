@@ -17,7 +17,7 @@ const customerSchema = new mongoose.Schema({
         unique: true
     },
     accounts: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Account'
     }],
 }, {

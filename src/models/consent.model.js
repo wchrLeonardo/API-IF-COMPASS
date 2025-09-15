@@ -3,7 +3,7 @@ import autoIncrementId from '../plugins/custom-auto-increment-id.plugin.js';
 
 const consentSchema = new mongoose.Schema({
      customer: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Customer',
         required: true,
     },
@@ -16,7 +16,7 @@ const consentSchema = new mongoose.Schema({
     permissions: [{
         type: String,
         required: true,
-        enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
+        enum: ['BALANCES_READ', 'TRANSACTIONS_READ']
     }],
     expirationDateTime: {
         type: Date,
@@ -24,12 +24,12 @@ const consentSchema = new mongoose.Schema({
             new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     },
     currentAccount: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Account',
         required: true,
     },
     sourceAccounts: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Account'
     }]
 }, { timestamps: true });
