@@ -4,29 +4,29 @@ info:
   version: 1.0.0
   description: |
     API RESTful para gerenciamento bancário desenvolvida para o desafio COMPASS.
-    
+
     Esta API oferece funcionalidades completas para:
     - **Gestão de Clientes**: Cadastro, consulta, atualização e exclusão
     - **Contas Bancárias**: Criação e gestão de contas
     - **Transações**: Registro e consulta de movimentações
     - **Consentimentos**: Gerenciamento de autorizações
-    
+
     ## Funcionalidades
-    
+
     - 🏦 Sistema bancário completo
     - 📊 Controle de transações
     - 👥 Gestão de clientes
     - 🔐 Sistema de consentimentos
     - 📄 Paginação automática
     - ⚡ Respostas rápidas e otimizadas
-    
+
     ## Tecnologias
-    
+
     - Node.js + Express
     - MongoDB + Mongoose
     - Arquitetura MVC
     - Middlewares personalizados
-    
+
     **Desenvolvido por:** Leonardo Ferreira  
     **Projeto:** COMPASS Challenge
   contact:
@@ -50,9 +50,636 @@ tags:
   - name: Consents
     description: Operações relacionadas aos consentimentos
 
+paths:
+  /customers:
+    get:
+      tags:
+        - Customers
+      summary: Listar clientes
+      description: Retorna uma lista paginada de todos os clientes
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Número da página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+          description: Itens por página
+      responses:
+        '200':
+          description: Lista paginada de clientes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomersPaginated'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Customers
+      summary: Criar cliente
+      description: Cria um novo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '201':
+          description: Cliente criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID do cliente
+        schema:
+          type: string
+    get:
+      tags:
+        - Customers
+      summary: Obter cliente
+      description: Retorna os detalhes de um cliente específico
+      responses:
+        '200':
+          description: Detalhes do cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Customers
+      summary: Atualizar cliente
+      description: Atualiza os dados de um cliente específico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+      responses:
+        '200':
+          description: Cliente atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Customers
+      summary: Excluir cliente
+      description: Remove um cliente específico
+      responses:
+        '204':
+          description: Cliente removido com sucesso
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /accounts/customers/{id_customer}:
+    parameters:
+      - name: id_customer
+        in: path
+        required: true
+        description: ID do cliente
+        schema:
+          type: string
+    post:
+      tags:
+        - Accounts
+      summary: Criar conta
+      description: Cria uma nova conta bancária para um cliente específico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        '201':
+          description: Conta criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Accounts
+      summary: Listar contas do cliente
+      description: Retorna todas as contas de um cliente específico
+      responses:
+        '200':
+          description: Lista de contas do cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /accounts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID da conta
+        schema:
+          type: string
+    get:
+      tags:
+        - Accounts
+      summary: Obter conta
+      description: Retorna os detalhes de uma conta específica
+      responses:
+        '200':
+          description: Detalhes da conta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Accounts
+      summary: Excluir conta
+      description: Remove uma conta específica
+      responses:
+        '204':
+          description: Conta removida com sucesso
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /accounts/{id}/balance:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID da conta
+        schema:
+          type: string
+    get:
+      tags:
+        - Accounts
+      summary: Obter saldo
+      description: Retorna o saldo atual da conta
+      responses:
+        '200':
+          description: Saldo da conta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    description: Saldo atual da conta
+                    example: 1500.50
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /accounts/{id_account}/aggregated-view:
+    parameters:
+      - name: id_account
+        in: path
+        required: true
+        description: ID da conta
+        schema:
+          type: string
+    get:
+      tags:
+        - Accounts
+      summary: Visão agregada
+      description: Retorna uma visão agregada da conta com todas as suas informações
+      responses:
+        '200':
+          description: Visão agregada da conta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    $ref: '#/components/schemas/Account'
+                  owner:
+                    $ref: '#/components/schemas/Customer'
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /transactions/accounts/{id_account}:
+    parameters:
+      - name: id_account
+        in: path
+        required: true
+        description: ID da conta
+        schema:
+          type: string
+    get:
+      tags:
+        - Transactions
+      summary: Listar transações da conta
+      description: Retorna todas as transações de uma conta específica
+      responses:
+        '200':
+          description: Lista de transações da conta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Transactions
+      summary: Criar transação
+      description: Cria uma nova transação para uma conta específica
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '201':
+          description: Transação criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /transactions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID da transação
+        schema:
+          type: string
+    get:
+      tags:
+        - Transactions
+      summary: Obter transação
+      description: Retorna os detalhes de uma transação específica
+      responses:
+        '200':
+          description: Detalhes da transação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Transação não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /consents:
+    post:
+      tags:
+        - Consents
+      summary: Criar consentimento
+      description: Cria um novo consentimento para acesso aos dados
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentRequest'
+      responses:
+        '201':
+          description: Consentimento criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consent'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Cliente ou conta não encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /consents/customer/{id_customer}:
+    parameters:
+      - name: id_customer
+        in: path
+        required: true
+        description: ID do cliente
+        schema:
+          type: string
+    get:
+      tags:
+        - Consents
+      summary: Listar consentimentos do cliente
+      description: Retorna todos os consentimentos de um cliente específico
+      responses:
+        '200':
+          description: Lista de consentimentos do cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consent'
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /consents/customer/{id_customer}/revoke-all:
+    parameters:
+      - name: id_customer
+        in: path
+        required: true
+        description: ID do cliente
+        schema:
+          type: string
+    patch:
+      tags:
+        - Consents
+      summary: Revogar todos os consentimentos do cliente
+      description: Revoga todos os consentimentos ativos de um cliente específico
+      responses:
+        '204':
+          description: Todos os consentimentos foram revogados com sucesso
+        '404':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /consents/{id}/customer/{id_customer}/revoke:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID do consentimento
+        schema:
+          type: string
+      - name: id_customer
+        in: path
+        required: true
+        description: ID do cliente
+        schema:
+          type: string
+    patch:
+      tags:
+        - Consents
+      summary: Revogar consentimento específico
+      description: Revoga um consentimento específico de um cliente
+      responses:
+        '204':
+          description: Consentimento revogado com sucesso
+        '404':
+          description: Consentimento ou cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /consents/account/{id_account}:
+    parameters:
+      - name: id_account
+        in: path
+        required: true
+        description: ID da conta
+        schema:
+          type: string
+    get:
+      tags:
+        - Consents
+      summary: Obter consentimento da conta
+      description: Retorna o consentimento ativo para uma conta específica
+      responses:
+        '200':
+          description: Consentimento da conta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consent'
+        '404':
+          description: Conta não encontrada ou sem consentimento ativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
-    # ===== CUSTOMER SCHEMAS =====
     Customer:
       type: object
       required:
@@ -192,7 +819,6 @@ components:
           description: Número da próxima página
           example: 2
 
-    # ===== ACCOUNT SCHEMAS =====
     Account:
       type: object
       required:
@@ -255,6 +881,7 @@ components:
         - type
         - branch
         - number
+        - owner
       properties:
         type:
           type: string
@@ -269,8 +896,11 @@ components:
           type: string
           description: Número único da conta
           example: "567890"
+        owner:
+          type: string
+          description: ID do cliente proprietário da conta
+          example: "cus_001"
 
-    # ===== TRANSACTION SCHEMAS =====
     Transaction:
       type: object
       required:
@@ -297,13 +927,14 @@ components:
         description:
           type: string
           description: Descrição da transação
-          example: "Depósito via PIX"
-          maxLength: 255
+          example: "Depósito"
+          minLength: 1
+          maxLength: 200
         category:
           type: string
-          description: Categoria da transação (opcional)
-          example: "Transferência"
-          maxLength: 100
+          description: Categoria da transação
+          example: "payment"
+          nullable: true
         account:
           type: string
           description: ID da conta associada à transação
@@ -311,14 +942,14 @@ components:
         createdAt:
           type: string
           format: date-time
-          description: Data e hora da transação
-          example: "2024-01-15T14:30:00Z"
+          description: Data de criação da transação
+          example: "2024-01-15T10:30:00Z"
           readOnly: true
         updatedAt:
           type: string
           format: date-time
           description: Data da última atualização
-          example: "2024-01-15T14:30:00Z"
+          example: "2024-01-15T10:30:00Z"
           readOnly: true
 
     TransactionRequest:
@@ -341,107 +972,56 @@ components:
         description:
           type: string
           description: Descrição da transação
-          example: "Depósito via PIX"
-          maxLength: 255
+          example: "Depósito"
+          minLength: 1
+          maxLength: 200
         category:
           type: string
-          description: Categoria da transação (opcional)
-          example: "Transferência"
-          maxLength: 100
-
-    TransactionsPaginated:
-      type: object
-      properties:
-        docs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-          description: Lista de transações na página atual
-        totalDocs:
-          type: integer
-          description: Total de documentos encontrados
-          example: 200
-        limit:
-          type: integer
-          description: Número máximo de itens por página
-          example: 10
-        totalPages:
-          type: integer
-          description: Total de páginas
-          example: 20
-        page:
-          type: integer
-          description: Página atual
-          example: 1
-        pagingCounter:
-          type: integer
-          description: Contador sequencial da paginação
-          example: 1
-        hasPrevPage:
-          type: boolean
-          description: Indica se há página anterior
-          example: false
-        hasNextPage:
-          type: boolean
-          description: Indica se há próxima página
-          example: true
-        prevPage:
-          type: integer
+          description: Categoria da transação
+          example: "payment"
           nullable: true
-          description: Número da página anterior
-          example: null
-        nextPage:
-          type: integer
-          nullable: true
-          description: Número da próxima página
-          example: 2
 
-    # ===== CONSENT SCHEMAS =====
     Consent:
       type: object
       required:
-        - customer
+        - account
+        - owner
         - permissions
-        - currentAccount
       properties:
         id:
           type: string
           description: ID único do consentimento (auto-gerado)
           example: "con_001"
           readOnly: true
-        customer:
+        account:
           type: string
-          description: ID do cliente que concede o consentimento
+          description: ID da conta associada ao consentimento
+          example: "acc_001"
+        owner:
+          type: string
+          description: ID do cliente proprietário do consentimento
           example: "cus_001"
-        status:
-          type: string
-          description: Status atual do consentimento
-          enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED']
-          example: "AUTHORIZED"
-          default: "UNAUTHORIZED"
         permissions:
           type: array
           description: Lista de permissões concedidas
           items:
             type: string
-            enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
-          example: ["ACCOUNTS_READ", "BALANCES_READ"]
-          minItems: 1
-        expirationDateTime:
+            enum: ['read', 'write']
+          example: ["read", "write"]
+        status:
+          type: string
+          description: Status do consentimento
+          enum: ['active', 'revoked']
+          example: "active"
+          default: "active"
+          readOnly: true
+        revokedAt:
           type: string
           format: date-time
-          description: Data e hora de expiração do consentimento
-          example: "2025-01-15T10:30:00Z"
-        currentAccount:
-          type: string
-          description: ID da conta principal do consentimento
-          example: "acc_001"
-        sourceAccounts:
-          type: array
-          description: Lista de contas de origem autorizadas
-          items:
-            type: string
-          example: ["acc_001", "acc_002"]
+          description: Data de revogação do consentimento
+          example: "2024-01-15T10:30:00Z"
+          nullable: true
+          readOnly: true
         createdAt:
           type: string
           format: date-time
@@ -458,1049 +1038,35 @@ components:
     ConsentRequest:
       type: object
       required:
-        - customer
+        - account
+        - owner
         - permissions
-        - currentAccount
       properties:
-        customer:
+        account:
           type: string
-          description: ID do cliente que concede o consentimento
+          description: ID da conta associada ao consentimento
+          example: "acc_001"
+        owner:
+          type: string
+          description: ID do cliente proprietário do consentimento
           example: "cus_001"
         permissions:
           type: array
-          description: Lista de permissões solicitadas
+          description: Lista de permissões concedidas
           items:
             type: string
-            enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
-          example: ["ACCOUNTS_READ", "BALANCES_READ"]
-          minItems: 1
-        currentAccount:
-          type: string
-          description: ID da conta principal do consentimento
-          example: "acc_001"
-        sourceAccounts:
-          type: array
-          description: Lista de contas de origem (opcional)
-          items:
-            type: string
-          example: ["acc_001", "acc_002"]
-        expirationDateTime:
-          type: string
-          format: date-time
-          description: Data de expiração customizada (opcional)
-          example: "2025-06-15T10:30:00Z"
+            enum: ['read', 'write']
+          example: ["read", "write"]
 
-    # ===== COMMON SCHEMAS =====
     Error:
       type: object
       properties:
         message:
           type: string
           description: Mensagem de erro
-          example: "Recurso não encontrado"
-        status:
-          type: integer
-          description: Código de status HTTP
-          example: 404
-
-    ValidationError:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Mensagem de erro de validação
-          example: "Dados obrigatórios não fornecidos"
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              field:
-                type: string
-                example: "email"
-              message:
-                type: string
-                example: "Email é obrigatório"
-
-  responses:
-    BadRequest:
-      description: Requisição inválida - dados obrigatórios não fornecidos
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-
-    NotFound:
-      description: Recurso não encontrado
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-    InternalServerError:
-      description: Erro interno do servidor
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-paths:
-  # ===== CUSTOMERS ENDPOINTS =====
-  /customers:
-    post:
-      tags: [Customers]
-      summary: Criar um novo cliente
-      description: |
-        Cria um novo cliente no sistema bancário.
-        
-        **Validações:**
-        - Nome é obrigatório (2-100 caracteres)
-        - CPF é obrigatório e deve ser único (11 dígitos)
-        - Email é obrigatório e deve ser único
-        
-        **Funcionalidades:**
-        - ID é gerado automaticamente no formato "cus_XXX"
-        - Timestamps são adicionados automaticamente
-        - CPF e email devem ser únicos no sistema
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CustomerRequest'
-            examples:
-              exemplo1:
-                summary: Cliente pessoa física
-                value:
-                  name: "Maria Santos Silva"
-                  cpf: "12345678901"
-                  email: "maria.santos@email.com"
-              exemplo2:
-                summary: Cliente jovem
-                value:
-                  name: "Pedro Oliveira"
-                  cpf: "98765432109"
-                  email: "pedro.oliveira@gmail.com"
-      responses:
-        '201':
-          description: Cliente criado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          description: CPF ou email já existem
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "CPF já cadastrado no sistema"
-                status: 409
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    get:
-      tags: [Customers]
-      summary: Listar todos os clientes
-      description: |
-        Retorna uma lista paginada de todos os clientes cadastrados.
-        
-        **Funcionalidades:**
-        - Suporte à paginação automática
-        - Ordenação por data de criação (mais recentes primeiro)
-        - Informações completas de paginação incluídas
-        - População automática das contas associadas
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: Número da página desejada
-          example: 1
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-          description: Número de itens por página
-          example: 10
-      responses:
-        '200':
-          description: Lista de clientes recuperada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomersPaginated'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /customers/{id}:
-    get:
-      tags: [Customers]
-      summary: Buscar cliente por ID
-      description: |
-        Retorna os dados completos de um cliente específico pelo ID.
-        
-        **Funcionalidades:**
-        - Busca pelo ID customizado (formato: cus_XXX)
-        - População automática das contas associadas
-        - Retorno de dados completos incluindo timestamps
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^cus_[0-9]{3}$'
-          description: ID único do cliente
-          example: "cus_001"
-      responses:
-        '200':
-          description: Cliente encontrado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    put:
-      tags: [Customers]
-      summary: Atualizar dados do cliente
-      description: |
-        Atualiza os dados de um cliente específico.
-        
-        **Validações:**
-        - Pelo menos um campo deve ser fornecido
-        - CPF e email devem continuar únicos se alterados
-        - Nome deve ter entre 2-100 caracteres se fornecido
-        - CPF deve ter 11 dígitos se fornecido
-        
-        **Funcionalidades:**
-        - Atualização parcial (apenas campos fornecidos)
-        - Validação de unicidade para CPF e email
-        - Timestamp de atualização automático
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^cus_[0-9]{3}$'
-          description: ID único do cliente
-          example: "cus_001"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CustomerUpdateRequest'
-            examples:
-              atualizarNome:
-                summary: Atualizar apenas o nome
-                value:
-                  name: "Maria Santos Silva Oliveira"
-              atualizarEmail:
-                summary: Atualizar apenas o email
-                value:
-                  email: "maria.oliveira@newemail.com"
-              atualizarCompleto:
-                summary: Atualizar todos os dados
-                value:
-                  name: "Maria Santos Silva Oliveira"
-                  cpf: "11122233344"
-                  email: "maria.oliveira@newemail.com"
-      responses:
-        '200':
-          description: Cliente atualizado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
-          description: CPF ou email já existem
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "Email já cadastrado para outro cliente"
-                status: 409
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    delete:
-      tags: [Customers]
-      summary: Excluir cliente
-      description: |
-        Remove um cliente do sistema permanentemente.
-        
-        **⚠️ ATENÇÃO:**
-        - Esta operação é **irreversível**
-        - Todos os dados do cliente serão perdidos
-        - Contas associadas podem ser afetadas
-        
-        **Funcionalidades:**
-        - Remoção completa do registro
-        - Verificação de existência antes da exclusão
-        - Limpeza de referências relacionadas
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^cus_[0-9]{3}$'
-          description: ID único do cliente a ser excluído
-          example: "cus_001"
-      responses:
-        '200':
-          description: Cliente excluído com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Cliente excluído com sucesso"
-                  deletedCustomer:
-                    $ref: '#/components/schemas/Customer'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  # ===== ACCOUNTS ENDPOINTS =====
-  /accounts/customers/{id_customer}:
-    post:
-      tags: [Accounts]
-      summary: Criar uma nova conta para um cliente
-      description: |
-        Cria uma nova conta bancária associada a um cliente específico.
-        
-        **Validações:**
-        - Cliente deve existir no sistema
-        - Tipo de conta deve ser 'checking' ou 'savings'
-        - Número da conta deve ser único
-        - Agência é obrigatória
-        
-        **Funcionalidades:**
-        - ID é gerado automaticamente no formato "acc_XXX"
-        - Saldo inicial é 0
-        - Conta é automaticamente associada ao cliente
-      parameters:
-        - in: path
-          name: id_customer
-          required: true
-          schema:
-            type: string
-            pattern: '^cus_[0-9]{3}$'
-          description: ID do cliente proprietário da conta
-          example: "cus_001"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountRequest'
-            examples:
-              contaCorrente:
-                summary: Conta corrente
-                value:
-                  type: "checking"
-                  branch: "1234"
-                  number: "567890"
-              contaPoupanca:
-                summary: Conta poupança
-                value:
-                  type: "savings"
-                  branch: "5678"
-                  number: "123456"
-      responses:
-        '201':
-          description: Conta criada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          description: Cliente não encontrado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "Cliente não encontrado"
-                status: 404
-        '409':
-          description: Número da conta já existe
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "Número da conta já existe"
-                status: 409
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    get:
-      tags: [Accounts]
-      summary: Listar contas de um cliente
-      description: |
-        Retorna todas as contas bancárias de um cliente específico.
-        
-        **Funcionalidades:**
-        - Lista todas as contas do cliente
-        - Inclui informações de saldo e transações
-        - Ordenação por data de criação
-      parameters:
-        - in: path
-          name: id_customer
-          required: true
-          schema:
-            type: string
-            pattern: '^cus_[0-9]{3}$'
-          description: ID do cliente
-          example: "cus_001"
-      responses:
-        '200':
-          description: Lista de contas recuperada com sucesso
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Account'
-        '404':
-          description: Cliente não encontrado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /accounts/{id}:
-    get:
-      tags: [Accounts]
-      summary: Buscar conta por ID
-      description: |
-        Retorna os dados completos de uma conta específica pelo ID.
-        
-        **Funcionalidades:**
-        - Busca pelo ID customizado (formato: acc_XXX)
-        - Inclui informações do proprietário
-        - Inclui lista de transações
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID único da conta
-          example: "acc_001"
-      responses:
-        '200':
-          description: Conta encontrada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    delete:
-      tags: [Accounts]
-      summary: Excluir conta
-      description: |
-        Remove uma conta bancária do sistema permanentemente.
-        
-        **⚠️ ATENÇÃO:**
-        - Esta operação é **irreversível**
-        - Todas as transações da conta serão perdidas
-        - Conta deve ter saldo zero para ser excluída
-        
-        **Funcionalidades:**
-        - Verificação de saldo antes da exclusão
-        - Remoção de referências do cliente
-        - Limpeza de dados relacionados
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID único da conta a ser excluída
-          example: "acc_001"
-      responses:
-        '200':
-          description: Conta excluída com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Conta excluída com sucesso"
-                  deletedAccount:
-                    $ref: '#/components/schemas/Account'
-        '400':
-          description: Conta possui saldo ou transações pendentes
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "Não é possível excluir conta com saldo"
-                status: 400
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /accounts/{id}/balance:
-    get:
-      tags: [Accounts]
-      summary: Consultar saldo da conta
-      description: |
-        Retorna o saldo atual de uma conta específica.
-        
-        **Funcionalidades:**
-        - Consulta rápida de saldo
-        - Informações de última atualização
-        - Dados básicos da conta
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID único da conta
-          example: "acc_001"
-      responses:
-        '200':
-          description: Saldo consultado com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  accountId:
-                    type: string
-                    example: "acc_001"
-                  balance:
-                    type: number
-                    example: 1500.75
-                  currency:
-                    type: string
-                    example: "BRL"
-                  lastUpdated:
-                    type: string
-                    format: date-time
-                    example: "2024-01-15T14:30:00Z"
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /accounts/{id_account}/aggregated-view:
-    get:
-      tags: [Accounts]
-      summary: Visão agregada da conta
-      description: |
-        Retorna uma visão completa da conta com estatísticas e resumos.
-        
-        **Funcionalidades:**
-        - Informações completas da conta
-        - Estatísticas de transações
-        - Resumo financeiro
-        - Últimas movimentações
-      parameters:
-        - in: path
-          name: id_account
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID único da conta
-          example: "acc_001"
-      responses:
-        '200':
-          description: Visão agregada recuperada com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  account:
-                    $ref: '#/components/schemas/Account'
-                  statistics:
-                    type: object
-                    properties:
-                      totalTransactions:
-                        type: integer
-                        example: 25
-                      totalCredits:
-                        type: number
-                        example: 5000.00
-                      totalDebits:
-                        type: number
-                        example: 3500.00
-                      averageTransaction:
-                        type: number
-                        example: 150.75
-                  recentTransactions:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Transaction'
-                    description: Últimas 5 transações
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  # ===== TRANSACTIONS ENDPOINTS =====
-  /transactions/accounts/{id_account}:
-    post:
-      tags: [Transactions]
-      summary: Criar uma nova transação
-      description: |
-        Registra uma nova transação em uma conta específica.
-        
-        **Validações:**
-        - Conta deve existir no sistema
-        - Valor deve ser maior que zero
-        - Tipo deve ser 'credit' ou 'debit'
-        - Descrição é obrigatória
-        
-        **Funcionalidades:**
-        - ID é gerado automaticamente no formato "txn_XXX"
-        - Saldo da conta é atualizado automaticamente
-        - Timestamp da transação é registrado
-      parameters:
-        - in: path
-          name: id_account
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID da conta para a transação
-          example: "acc_001"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionRequest'
-            examples:
-              deposito:
-                summary: Depósito na conta
-                value:
-                  amount: 500.00
-                  type: "credit"
-                  description: "Depósito via PIX"
-                  category: "Transferência"
-              saque:
-                summary: Saque da conta
-                value:
-                  amount: 200.00
-                  type: "debit"
-                  description: "Saque no caixa eletrônico"
-                  category: "Saque"
-      responses:
-        '201':
-          description: Transação criada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transaction'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          description: Conta não encontrada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '422':
-          description: Saldo insuficiente para débito
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: "Saldo insuficiente para realizar a transação"
-                status: 422
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    get:
-      tags: [Transactions]
-      summary: Listar transações de uma conta
-      description: |
-        Retorna uma lista paginada de transações de uma conta específica.
-        
-        **Funcionalidades:**
-        - Suporte à paginação automática
-        - Ordenação por data (mais recentes primeiro)
-        - Filtros por tipo e período
-        - Informações completas de cada transação
-      parameters:
-        - in: path
-          name: id_account
-          required: true
-          schema:
-            type: string
-            pattern: '^acc_[0-9]{3}$'
-          description: ID da conta
-          example: "acc_001"
-        - in: query
-          name: page
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: Número da página desejada
-          example: 1
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-          description: Número de itens por página
-          example: 10
-      responses:
-        '200':
-          description: Lista de transações recuperada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionsPaginated'
-        '404':
-          description: Conta não encontrada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /transactions/{id}:
-    get:
-      tags: [Transactions]
-      summary: Buscar transação por ID
-      description: |
-        Retorna os dados completos de uma transação específica pelo ID.
-        
-        **Funcionalidades:**
-        - Busca pelo ID customizado (formato: txn_XXX)
-        - Inclui informações da conta associada
-        - Detalhes completos da movimentação
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^txn_[0-9]{3}$'
-          description: ID único da transação
-          example: "txn_001"
-      responses:
-        '200':
-          description: Transação encontrada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transaction'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  # ===== CONSENTS ENDPOINTS =====
-  /consents:
-    post:
-      tags: [Consents]
-      summary: Criar um novo consentimento
-      description: |
-        Cria um novo consentimento para acesso às informações de um cliente.
-        
-        **Validações:**
-        - Cliente deve existir no sistema
-        - Conta atual deve existir e pertencer ao cliente
-        - Pelo menos uma permissão deve ser especificada
-        - Contas de origem devem pertencer ao cliente
-        
-        **Funcionalidades:**
-        - ID é gerado automaticamente no formato "con_XXX"
-        - Status inicial é 'UNAUTHORIZED'
-        - Expiração padrão de 1 ano
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConsentRequest'
-            examples:
-              consentimentoBasico:
-                summary: Consentimento básico para leitura
-                value:
-                  customer: "cus_001"
-                  permissions: ["ACCOUNTS_READ", "BALANCES_READ"]
-                  currentAccount: "acc_001"
-              consentimentoCompleto:
-                summary: Consentimento completo
-                value:
-                  customer: "cus_001"
-                  permissions: ["ACCOUNTS_READ", "BALANCES_READ", "TRANSACTIONS_READ"]
-                  currentAccount: "acc_001"
-                  sourceAccounts: ["acc_001", "acc_002"]
-                  expirationDateTime: "2025-06-15T10:30:00Z"
-      responses:
-        '201':
-          description: Consentimento criado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Consent'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          description: Cliente ou conta não encontrados
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    get:
-      tags: [Consents]
-      summary: Listar consentimentos
-      description: |
-        Retorna uma lista paginada de todos os consentimentos.
-        
-        **Funcionalidades:**
-        - Suporte à paginação automática
-        - Filtros por status e cliente
-        - Ordenação por data de criação
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: Número da página desejada
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-          description: Número de itens por página
-        - in: query
-          name: status
-          schema:
-            type: string
-            enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED']
-          description: Filtrar por status do consentimento
-      responses:
-        '200':
-          description: Lista de consentimentos recuperada com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  docs:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Consent'
-                  totalDocs:
-                    type: integer
-                  limit:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  page:
-                    type: integer
-                  pagingCounter:
-                    type: integer
-                  hasPrevPage:
-                    type: boolean
-                  hasNextPage:
-                    type: boolean
-                  prevPage:
-                    type: integer
-                    nullable: true
-                  nextPage:
-                    type: integer
-                    nullable: true
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /consents/{id}:
-    get:
-      tags: [Consents]
-      summary: Buscar consentimento por ID
-      description: |
-        Retorna os dados completos de um consentimento específico pelo ID.
-        
-        **Funcionalidades:**
-        - Busca pelo ID customizado (formato: con_XXX)
-        - Inclui informações do cliente e contas
-        - Status atual e permissões concedidas
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^con_[0-9]{3}$'
-          description: ID único do consentimento
-          example: "con_001"
-      responses:
-        '200':
-          description: Consentimento encontrado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Consent'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    put:
-      tags: [Consents]
-      summary: Atualizar consentimento
-      description: |
-        Atualiza o status ou permissões de um consentimento específico.
-        
-        **Funcionalidades:**
-        - Alterar status (AUTHORIZED, REVOKED, UNAUTHORIZED)
-        - Modificar permissões concedidas
-        - Atualizar data de expiração
-        - Alterar contas autorizadas
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^con_[0-9]{3}$'
-          description: ID único do consentimento
-          example: "con_001"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: string
-                  enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED']
-                permissions:
-                  type: array
-                  items:
-                    type: string
-                    enum: ['ACCOUNTS_READ', 'BALANCES_READ', 'TRANSACTIONS_READ']
-                expirationDateTime:
-                  type: string
-                  format: date-time
-                sourceAccounts:
-                  type: array
-                  items:
-                    type: string
-            examples:
-              autorizar:
-                summary: Autorizar consentimento
-                value:
-                  status: "AUTHORIZED"
-              revogar:
-                summary: Revogar consentimento
-                value:
-                  status: "REVOKED"
-              atualizarPermissoes:
-                summary: Atualizar permissões
-                value:
-                  permissions: ["ACCOUNTS_READ", "BALANCES_READ", "TRANSACTIONS_READ"]
-                  expirationDateTime: "2025-12-31T23:59:59Z"
-      responses:
-        '200':
-          description: Consentimento atualizado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Consent'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    delete:
-      tags: [Consents]
-      summary: Excluir consentimento
-      description: |
-        Remove um consentimento do sistema permanentemente.
-        
-        **⚠️ ATENÇÃO:**
-        - Esta operação é **irreversível**
-        - Todos os acessos baseados neste consentimento serão revogados
-        - Recomenda-se alterar o status para 'REVOKED' ao invés de excluir
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            pattern: '^con_[0-9]{3}$'
-          description: ID único do consentimento a ser excluído
-          example: "con_001"
-      responses:
-        '200':
-          description: Consentimento excluído com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Consentimento excluído com sucesso"
-                  deletedConsent:
-                    $ref: '#/components/schemas/Consent'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+          example: "Erro ao processar a requisição"
+        details:
+          type: object
+          description: Detalhes adicionais do erro
+          additionalProperties: true
+          example: { "field": "email", "error": "Email já cadastrado" }
