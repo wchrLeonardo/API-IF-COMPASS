@@ -129,7 +129,7 @@ api_IF/
 │   ├── 📁 middlewares/         # Middlewares customizados
 │   │   └── error.middleware.js
 │   ├── 📁 exceptions/          # Tratamento de exceções
-│   │   └── api-errors.js
+│   │   └── api-errors.exception.js
 │   └── 📁 plugins/             # Plugins do Mongoose
 │       └── custom-auto-increment-id.plugin.js
 └── 📁 docs/                    # Documentação OpenAPI

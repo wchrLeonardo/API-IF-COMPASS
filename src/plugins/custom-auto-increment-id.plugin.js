@@ -1,5 +1,5 @@
 import Counter from "../models/counter.model.js";
-import { BadRequestError } from "../exceptions/api-errors.js";
+import { BadRequestError } from "../exceptions/api-errors.exception.js";
 
 function autoIncrementId(schema, options) {
     const { modelName, prefix, paddingLength = 3 } = options;

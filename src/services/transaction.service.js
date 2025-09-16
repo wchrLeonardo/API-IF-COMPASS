@@ -1,6 +1,6 @@
 import Transaction from '../models/transaction.model.js';
 import Account from '../models/account.model.js';
-import { NotFoundError, BadRequestError } from '../exceptions/api-errors.js';
+import { NotFoundError, BadRequestError } from '../exceptions/api-errors.exception.js';
 
 const transactionStrategies = {
     credit: (balance, amount) => balance + amount,
@@ -11,7 +11,6 @@ const transactionStrategies = {
 };
 
 class TransactionService {
-
     async createTransaction(accountId, transactionData) {
         const account = await Account.findById(accountId);
 
@@ -40,7 +39,6 @@ class TransactionService {
             transaction, current_balance: newBalance
         };
     }
-
     async getTransactionById(id) {
         const transaction = await Transaction.findById(id).populate('account', 'type number');
         if (!transaction) {
@@ -48,7 +46,6 @@ class TransactionService {
         }
         return transaction;
     }
-
     async getAllTransactionsByAccountId(accountId, page = 1, limit = 20) {
         const skip = (page - 1) * limit;
         const transactions = await Transaction.find({ account: accountId })
@@ -64,7 +61,6 @@ class TransactionService {
             totalTransactions
         }
     }
-
 }
 
 export default new TransactionService();

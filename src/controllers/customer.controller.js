@@ -1,7 +1,6 @@
 import customerService from "../services/customer.service.js";
 
 class CustomerController {
-
     create = async (req, res, next) => {
         try {
             const customerData = req.body;

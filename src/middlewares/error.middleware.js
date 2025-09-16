@@ -1,4 +1,4 @@
-import { ApiError } from '../exceptions/api-errors.js';
+import { ApiError } from '../exceptions/api-errors.exception.js';
 
 const errorMiddleware = (error, req, res, next) => {
     console.error(error); 

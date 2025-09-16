@@ -1,10 +1,9 @@
 import Account from "../models/account.model.js";
 import Consent from "../models/consent.model.js";
 import Customer from "../models/customer.model.js";
-import { NotFoundError, BadRequestError, ForbiddenError } from "../exceptions/api-errors.js";
+import { NotFoundError, BadRequestError, ForbiddenError } from "../exceptions/api-errors.exception.js";
 
 class ConsentService {
-
     async createConsent(consentData) {
         if (!consentData.customer ||
             !consentData.currentAccount ||
@@ -41,14 +40,14 @@ class ConsentService {
         return consent;
     }
     async getConsentByAccountId(accountId) {
-        const consent = await Consent.findOne({ 
+        const consent = await Consent.findOne({
             currentAccount: accountId,
-            status: 'AUTHORIZED' 
+            status: 'AUTHORIZED'
         })
-        .sort({ createdAt: -1 })
-        .populate('customer', 'name')
-        .populate('currentAccount', 'number type')
-        .populate('sourceAccounts', 'number type');
+            .sort({ createdAt: -1 })
+            .populate('customer', 'name')
+            .populate('currentAccount', 'number type')
+            .populate('sourceAccounts', 'number type');
         if (!consent) {
             throw new NotFoundError("Consent not found");
         }
@@ -57,14 +56,14 @@ class ConsentService {
     async getAllActiveConsentsByCustomerId(customerId) {
         const consents = await Consent.aggregate([
             {
-                $match: { 
+                $match: {
                     customer: customerId,
-                    status: 'AUTHORIZED' 
+                    status: 'AUTHORIZED'
                 }
             },
             {
-                $sort: { 
-                    createdAt: -1 
+                $sort: {
+                    createdAt: -1
                 }
             },
             {
@@ -95,7 +94,7 @@ class ConsentService {
             {
                 $unwind: '$currentAccount'
             }
-        ]) 
+        ])
         return consents;
     }
     async revokeConsent(id, customerId) {
@@ -129,7 +128,6 @@ class ConsentService {
             message: ` ${revokeConsents.modifiedCount} consents revoked successfully`
         }
     }
-    
 }
 
 export default new ConsentService();

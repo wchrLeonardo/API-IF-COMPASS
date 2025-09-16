@@ -1,7 +1,6 @@
 import consentService from "../services/consent.service.js";
 
 class ConsentController {
-
     async create(req, res, next) {
         try {
             const consentData = req.body;

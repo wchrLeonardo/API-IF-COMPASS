@@ -1,7 +1,6 @@
 import transactionService from '../services/transaction.service.js';
 
 class TransactionController {
-
     create = async (req, res, next) => {
         try {
             const transactionData = req.body;
@@ -16,7 +15,6 @@ class TransactionController {
             next(error);
         }
     }
-
     getById = async (req, res, next) => {
         try {
             const { id } = req.params;
@@ -26,7 +24,6 @@ class TransactionController {
             next(error);
         };
     }
-
     getAllByAccountId = async (req, res, next) => {
         try {
             const { id_account } = req.params;

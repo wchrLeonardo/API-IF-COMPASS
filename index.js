@@ -10,6 +10,7 @@ import customerRoutes from './src/routes/customer.routes.js';
 import accountRoutes from './src/routes/account.routes.js';
 import transactionRoutes from './src/routes/transaction.routes.js';
 import consentRoutes from './src/routes/consent.routes.js';
+import openFinanceRoutes from './src/routes/open-finance.routes.js';
 
 dotenv.config();
 const app = express();
@@ -17,7 +18,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT
 
-// Documentação
 app.get('/docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpecs);
@@ -44,18 +44,17 @@ app.get('/docs', redoc({
   }
 }));
 
-// Swagger UI (alternativa)
 app.use('/docs/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
   customSiteTitle: 'API IF COMPASS - Swagger',
   customCss: '.swagger-ui .topbar { display: none }',
   customfavIcon: '/favicon.ico'
 }));
 
-// Rotas da API
 app.use('/', customerRoutes);
 app.use('/', accountRoutes);
 app.use('/', transactionRoutes);
 app.use('/', consentRoutes);
+app.use('/', openFinanceRoutes);
 
 app.use(errorMiddleware)
 

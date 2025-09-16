@@ -1,10 +1,9 @@
 import Customer from "../models/customer.model.js";
 import Account from "../models/account.model.js";
 import Transaction from "../models/transaction.model.js";
-import { NotFoundError, ConflictError } from "../exceptions/api-errors.js";
+import { NotFoundError, ConflictError } from "../exceptions/api-errors.exception.js";
 
 class CustomerService {
-
     async createCustomer(customerData) {
         const existingCustomer = await Customer.findOne({
             $or: [{ cpf: customerData.cpf }, { email: customerData.email }],
@@ -16,7 +15,6 @@ class CustomerService {
         const customer = await Customer.create(customerData);
         return customer;
     }
-
     async getCustomerById(id) {
         const customer = await Customer.findById(id).populate('accounts');
         if (!customer) {
@@ -24,7 +22,6 @@ class CustomerService {
         }
         return customer;
     };
-
     async getAllCustomers(page = 1, limit = 20) {
         const skip = (page - 1) * limit;
         const customers = await Customer.find().skip(skip).limit(limit);
@@ -37,7 +34,6 @@ class CustomerService {
             totalCustomers
         };
     };
-
     async updateCustomer(id, customerData) {
         const existingCustomer = await Customer.findOne({
             $or: [{ cpf: customerData.cpf }, { email: customerData.email }],
@@ -55,7 +51,6 @@ class CustomerService {
         }
         return updatedCustomer;
     };
-
     async deleteCustomer(id) {
         const customerToDelete = await Customer.findById(id);
         if (!customerToDelete) {
@@ -70,7 +65,6 @@ class CustomerService {
         await Customer.findByIdAndDelete(id);
         return customerToDelete;
     };
-
 }
 
 export default new CustomerService();

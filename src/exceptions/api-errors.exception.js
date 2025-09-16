@@ -31,4 +31,10 @@ class ForbiddenError extends ApiError {
     }
 }
 
-export { ApiError, NotFoundError, ConflictError, BadRequestError, ForbiddenError };
+class UnauthorizedError extends ApiError {
+    constructor(message = "Unauthorized") {
+        super(message, 401);
+    }
+}
+
+export { ApiError, NotFoundError, ConflictError, BadRequestError, ForbiddenError, UnauthorizedError };

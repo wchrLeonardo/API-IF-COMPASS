@@ -2,10 +2,9 @@ import Account from "../models/account.model.js";
 import Customer from "../models/customer.model.js";
 import Consent from "../models/consent.model.js";
 import Transaction from "../models/transaction.model.js";
-import { NotFoundError, ConflictError } from "../exceptions/api-errors.js";
+import { NotFoundError, ConflictError } from "../exceptions/api-errors.exception.js";
 
 class AccountService {
-
     async createAccount(owner, accountData) {
         const customer = await Customer.findById(owner);
         if (!customer) {
@@ -75,12 +74,12 @@ class AccountService {
         await Account.findByIdAndDelete(id);
         return accountToDelete;
     }
-   async getAggregatedViewAccounts(accountId, customerId) {
+    async getAggregatedViewAccounts(accountId, customerId) {
         const primaryAccount = await Account.findById(accountId);
         if (!primaryAccount || primaryAccount.owner.toString() !== customerId) {
             throw new ForbiddenError("Conta não encontrada ou não pertence a você.");
         }
-        
+
         const aggregatedView = {
             primaryAccount: {
                 ...primaryAccount.toObject(),
@@ -89,9 +88,9 @@ class AccountService {
             sharedData: []
         };
 
-        const potentialSourceAccounts = await Account.find({ 
-            owner: customerId, 
-            _id: { $ne: accountId } 
+        const potentialSourceAccounts = await Account.find({
+            owner: customerId,
+            _id: { $ne: accountId }
         });
 
         if (potentialSourceAccounts.length === 0) {
@@ -131,6 +130,5 @@ class AccountService {
         return aggregatedView;
     }
 }
-            
 
 export default new AccountService();
