@@ -104,8 +104,65 @@ tags:
       - Controle de acesso
       - Revogação de autorizações
       - Consultas de consentimentos
+  - name: OpenFinance
+    description: |
+      Compartilhamento de dados via Open Finance:
+      - Acesso a dados compartilhados
+      - Autenticação via API Key
+      - Controle de acesso seguro
 
 paths:
+  /open-finance/data:
+    get:
+      tags:
+        - OpenFinance
+      summary: Obter dados compartilhados
+      description: |
+        Recupera dados financeiros compartilhados via Open Finance.
+        Requer autenticação usando chave de API.
+      security:
+        - apiKey: []
+      responses:
+        "200":
+          description: Dados compartilhados recuperados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Authenticated via Open Finance"
+                  data:
+                    type: object
+                    properties:
+                      sharedAccounts:
+                        type: string
+                        example: "Your shared account data would appear here."
+        "401":
+          description: API key ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: "API key is missing"
+                details: {}
+        "403":
+          description: API key inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: "Invalid API key"
+                details: {}
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /customers:
     get:
       tags:
@@ -734,6 +791,17 @@ paths:
                 $ref: "#/components/schemas/Error"
 
 components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+      description: |
+        Chave de API para autenticação em endpoints Open Finance.
+        
+        Esta chave deve ser fornecida no cabeçalho `x-api-key` para acessar 
+        dados compartilhados e outros recursos protegidos da API Open Finance.
+        
   schemas:
     Customer:
       type: object

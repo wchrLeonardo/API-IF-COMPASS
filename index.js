@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connection from './src/config/mongodb-connect.js';
+import connection from './src/config/mongodb-connect.config.js';
 import errorMiddleware from './src/middlewares/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
 import redoc from 'redoc-express';

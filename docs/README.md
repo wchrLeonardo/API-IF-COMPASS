@@ -24,7 +24,9 @@ A documentação é a fonte principal de informações sobre endpoints, modelos 
 docs/
 ├── openapi.yaml     # Arquivo principal (consolidado)
 ├── README.md        # Este guia
-└── components/      # Diretório reservado para componentes (futuro)
+├── components/      # Diretório para componentes reutilizáveis
+├── paths/           # Diretório para definições de endpoints
+└── schemas/         # Diretório para esquemas de dados
 ```
 
 > **Nota**: Atualmente, toda a documentação está consolidada em um único arquivo `openapi.yaml` para facilitar a manutenção.
@@ -39,6 +41,7 @@ A documentação está organizada por tags que representam os principais recurso
 | **Accounts** | Gestão de contas bancárias | 6 endpoints |
 | **Transactions** | Operações financeiras | 3 endpoints |
 | **Consents** | Gerenciamento de permissões | 5 endpoints |
+| **OpenFinance** | Compartilhamento de dados | 1 endpoint |
 
 ## 🚀 Interfaces de Documentação
 
@@ -77,7 +80,7 @@ Todos os módulos da API estão completamente documentados:
 - `PUT /customers/{id}` - Atualização de cliente
 - `DELETE /customers/{id}` - Remoção de cliente
 
-### � Accounts (Contas)
+### 💳 Accounts (Contas)
 - `POST /accounts/customers/{id}` - Criação de conta
 - `GET /accounts/customers/{id}` - Contas de um cliente
 - `GET /accounts/{id}` - Detalhes de uma conta
@@ -97,7 +100,10 @@ Todos os módulos da API estão completamente documentados:
 - `PATCH /consents/{id}/customer/{id}/revoke` - Revogar específico
 - `PATCH /consents/customer/{id}/revoke-all` - Revogar todos
 
-## � Modelos de Dados
+### 📊 OpenFinance (Open Finance)
+- `GET /open-finance/data` - Obter dados compartilhados (requer API Key)
+
+## 📊 Modelos de Dados
 
 A documentação inclui definições completas dos seguintes modelos:
 
@@ -108,6 +114,7 @@ A documentação inclui definições completas dos seguintes modelos:
 | `Transaction` | Operação financeira | 7 propriedades |
 | `Consent` | Permissão de acesso | 8 propriedades |
 | `Error` | Resposta de erro | 2 propriedades |
+| `apiKey` | Esquema de segurança | Autenticação para Open Finance |
 
 ## 🛠️ Como Contribuir com a Documentação
 

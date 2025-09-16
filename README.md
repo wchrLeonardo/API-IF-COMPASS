@@ -103,13 +103,14 @@ api_IF/
 ├── 📄 package.json             # Dependências e scripts
 ├── 📁 src/                     # Código fonte principal
 │   ├── 📁 config/              # Configurações
-│   │   ├── mongodb-connect.js  # Conexão com MongoDB
+│   │   ├── mongodb-connect.config.js # Conexão com MongoDB
 │   │   └── swagger.config.js   # Configuração do Swagger
 │   ├── 📁 controllers/         # Controladores (lógica de negócio)
 │   │   ├── customer.controller.js
 │   │   ├── account.controller.js
 │   │   ├── transaction.controller.js
-│   │   └── consent.controller.js
+│   │   ├── consent.controller.js
+│   │   └── open-finance.controller.js
 │   ├── 📁 services/            # Camada de serviços
 │   │   ├── customer.service.js
 │   │   ├── account.service.js
@@ -125,16 +126,21 @@ api_IF/
 │   │   ├── customer.routes.js
 │   │   ├── account.routes.js
 │   │   ├── transaction.routes.js
-│   │   └── consent.routes.js
+│   │   ├── consent.routes.js
+│   │   └── open-finance.routes.js
 │   ├── 📁 middlewares/         # Middlewares customizados
-│   │   └── error.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── auth-open-finance.middleware.js
 │   ├── 📁 exceptions/          # Tratamento de exceções
 │   │   └── api-errors.exception.js
 │   └── 📁 plugins/             # Plugins do Mongoose
 │       └── custom-auto-increment-id.plugin.js
 └── 📁 docs/                    # Documentação OpenAPI
     ├── openapi.yaml            # Especificação completa da API
-    └── README.md               # Documentação da API
+    ├── README.md               # Documentação da API
+    ├── components/             # Componentes da API (opcional)
+    ├── paths/                  # Endpoints da API (opcional)
+    └── schemas/                # Esquemas de dados (opcional)
 ```
 
 ---
@@ -197,6 +203,7 @@ api_IF/
 - [💳 Guia de Contas](./docs#accounts)
 - [💰 Guia de Transações](./docs#transactions)
 - [🔐 Guia de Consentimentos](./docs#consents)
+- [📊 Guia de Open Finance](./docs#openfinance)
 
 ---
 
@@ -240,6 +247,12 @@ api_IF/
 | `GET` | `/consents/account/{id}` | Busca consentimento da conta | ✅ |
 | `PATCH` | `/consents/customer/{id}/revoke-all` | Revoga todos os consentimentos | ✅ |
 | `PATCH` | `/consents/{id}/customer/{id}/revoke` | Revoga consentimento específico | ✅ |
+
+### 📊 Open Finance
+
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|--------|
+| `GET` | `/open-finance/data` | Obter dados compartilhados (requer API Key) | ✅ |
 
 ---
 
