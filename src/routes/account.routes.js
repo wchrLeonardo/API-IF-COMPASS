@@ -13,6 +13,6 @@ accountRoutes.get('/accounts/:id/balance', accountController.getBalanceById);
 
 accountRoutes.delete('/accounts/:id', accountController.delete);
 
-accountRoutes.get('/accounts/:id_account/aggregated-view', accountController.getAggregatedView);
+accountRoutes.get('/accounts/:id_account/customer/:id_customer/aggregated-view', accountController.getAggregatedView);
 
 export default accountRoutes;

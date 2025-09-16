@@ -53,8 +53,8 @@ class AccountController {
     };
     getAggregatedView = async (req, res, next) => {
         try {
-            const { id_account: accountId } = req.params;
-            const aggregatedView = await accountService.getAggregatedViewAccounts(accountId);
+            const { id_account: accountId, id_customer: customerId } = req.params;
+            const aggregatedView = await accountService.getAggregatedViewAccounts(accountId, customerId);
             res.status(200).json(aggregatedView);
         } catch (error) {
             next(error);

@@ -21,7 +21,7 @@ class AccountService {
         }
 
         const account = await Account.create({
-            owner: owner, 
+            owner: owner,
             ...accountData
         });
 
@@ -75,49 +75,38 @@ class AccountService {
         await Account.findByIdAndDelete(id);
         return accountToDelete;
     }
-    async getAggregatedViewAccounts(accountId) {
-        const primaryAccount = await Account.findById(accountId)
-        if (!primaryAccount) {
-            throw new NotFoundError("Main account not found");
+   async getAggregatedViewAccounts(accountId, customerId) {
+        const primaryAccount = await Account.findById(accountId);
+        if (!primaryAccount || primaryAccount.owner.toString() !== customerId) {
+            throw new ForbiddenError("Conta não encontrada ou não pertence a você.");
         }
-
-        const primaryTransactions = await Transaction.find({ account: accountId })
-            .sort({ createdAt: -1 })
-            .limit(10);
+        
         const aggregatedView = {
             primaryAccount: {
                 ...primaryAccount.toObject(),
-                transactions: primaryTransactions
+                transactions: await Transaction.find({ account: accountId }).sort({ createdAt: -1 }).limit(10)
             },
             sharedData: []
-        }
+        };
 
-        const consents = await Consent.find({
-            currentAccount: accountId,
-            status: 'AUTHORIZED',
-            expirationDateTime: { $gt: new Date() }
-        }).populate('sourceAccounts');
+        const potentialSourceAccounts = await Account.find({ 
+            owner: customerId, 
+            _id: { $ne: accountId } 
+        });
 
-        if(consents.length === 0) {
+        if (potentialSourceAccounts.length === 0) {
             return aggregatedView;
         }
 
-        const allSourceAccountIds = consents.flatMap(consent => consent.sourceAccounts.map(acc => acc._id));
-        const allSharedTransactions = await Transaction.find({ account: { $in: allSourceAccountIds } })
-            .sort({ createdAt: -1 })
-            .limit(20);
+        for (const sourceAccount of potentialSourceAccounts) {
+            const consent = await Consent.findOne({
+                customer: customerId,
+                currentAccount: sourceAccount._id,
+                status: 'AUTHORIZED',
+                expirationDateTime: { $gt: new Date() }
+            });
 
-        const transactionsByAccount = allSharedTransactions.reduce((acc, tx) => {
-            const accountId = tx.account.toString();
-            if (!acc[accountId]) {
-                acc[accountId] = [];
-            }
-            acc[accountId].push(tx);
-            return acc;
-        }, {});
-
-        for (const consent of consents) {
-            for (const sourceAccount of consent.sourceAccounts) {
+            if (consent) {
                 const sharedAccountPayload = {
                     consentId: consent._id,
                     account: {
@@ -125,24 +114,23 @@ class AccountService {
                         number: sourceAccount.number,
                         type: sourceAccount.type,
                     }
-                }
+                };
 
                 if (consent.permissions.includes('BALANCES_READ')) {
                     sharedAccountPayload.account.balance = sourceAccount.balance;
                 }
                 if (consent.permissions.includes('TRANSACTIONS_READ')) {
-                    
-                    sharedAccountPayload.account.transactions = transactionsByAccount[sourceAccount._id.toString()] || [];
+                    sharedAccountPayload.account.transactions = await Transaction.find({ account: sourceAccount._id })
+                        .sort({ createdAt: -1 })
+                        .limit(10);
                 }
                 aggregatedView.sharedData.push(sharedAccountPayload);
-
             }
-
         }
 
         return aggregatedView;
     }
-
 }
+            
 
 export default new AccountService();
