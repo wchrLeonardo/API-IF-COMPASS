@@ -5,6 +5,7 @@
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-orange?logo=openapi-initiative)
 ![ReDoc](https://img.shields.io/badge/ReDoc-latest-green)
 ![Swagger UI](https://img.shields.io/badge/Swagger_UI-latest-blue)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)
 
 **Documentação completa da API IF COMPASS**
 
@@ -135,12 +136,31 @@ A documentação segue convenções específicas:
 - **Respostas de Erro**: Formato padronizado com `message` e `details`
 - **Exemplos**: Dados realistas para todas as operações
 
-## 🔗 Links Úteis
+## � Execução com Docker
+
+A API IF COMPASS pode ser executada facilmente em ambiente Docker:
+
+```bash
+# Iniciar a API e MongoDB
+docker-compose up
+
+# Acessar a documentação
+http://localhost:5000/docs
+```
+
+A configuração Docker inclui:
+- Container da API com Node.js 20
+- Container MongoDB com persistência de dados
+- Volumes para desenvolvimento contínuo
+- Portas mapeadas: 5000 (API) e 27017 (MongoDB)
+
+## �🔗 Links Úteis
 
 - [Guia OpenAPI 3.1.0](https://spec.openapis.org/oas/v3.1.0)
 - [Melhores Práticas ReDoc](https://github.com/Redocly/redoc)
 - [Documentação Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
 - [JSON Schema](https://json-schema.org/understanding-json-schema/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
 ---
 

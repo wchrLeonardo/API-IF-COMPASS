@@ -10,7 +10,10 @@
 
 **API bancária RESTful completa desenvolvida para o desafio COMPASS**
 
-[📚 Documentação](#-documentação) • [🚀 Instalação](#-instalação) • [🔗 Endpoints](#-endpoints) • [🛠️ Tecnologias](#️-stack-tecnológico)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-Ready-blue?logo=docker)
+
+[📚 Documentação](#-documentação) • [🚀 Instalação](#-instalação) • [🐳 Docker](#-configuração) • [🔗 Endpoints](#-endpoints) • [🛠️ Tecnologias](#️-stack-tecnológico)
 
 </div>
 
@@ -38,6 +41,8 @@ A **API IF COMPASS** é uma solução bancária moderna e completa, desenvolvida
 - 💳 **Contas Bancárias** (Corrente e Poupança)
 - 💰 **Sistema de Transações** com controle de saldo
 - 🔐 **Consentimentos** para Open Banking
+- 📊 **Open Finance** com compartilhamento de dados
+- 🐳 **Docker Ready** para execução em containers
 
 ---
 
@@ -71,6 +76,7 @@ A **API IF COMPASS** é uma solução bancária moderna e completa, desenvolvida
 <td align="center"><strong>Backend</strong></td>
 <td align="center"><strong>Banco de Dados</strong></td>
 <td align="center"><strong>Documentação</strong></td>
+<td align="center"><strong>Deployment</strong></td>
 <td align="center"><strong>Ferramentas</strong></td>
 </tr>
 <tr>
@@ -87,6 +93,10 @@ A **API IF COMPASS** é uma solução bancária moderna e completa, desenvolvida
   <br>OpenAPI 3.1.0
 </td>
 <td align="center">
+  <img src="https://skillicons.dev/icons?i=docker" />
+  <br>Docker + Compose
+</td>
+<td align="center">
   <img src="https://skillicons.dev/icons?i=vscode,git" />
   <br>VS Code + Git
 </td>
@@ -101,7 +111,9 @@ A **API IF COMPASS** é uma solução bancária moderna e completa, desenvolvida
 api_IF/
 ├── 📄 index.js                 # Ponto de entrada da aplicação
 ├── 📄 package.json             # Dependências e scripts
-├── 📁 src/                     # Código fonte principal
+├── 🐳 Dockerfile               # Configuração para imagem Docker
+├── 📄 docker-compose.yml       # Configuração dos serviços Docker
+├── �📁 src/                     # Código fonte principal
 │   ├── 📁 config/              # Configurações
 │   │   ├── mongodb-connect.config.js # Conexão com MongoDB
 │   │   └── swagger.config.js   # Configuração do Swagger
@@ -149,11 +161,18 @@ api_IF/
 
 ### Pré-requisitos
 
+**Opção 1: Execução Local**
 - Node.js 20.x ou superior
 - MongoDB 7.x ou superior
 - npm ou yarn
 
+**Opção 2: Execução com Docker**
+- Docker
+- Docker Compose
+
 ### Passos
+
+#### Opção 1: Execução Local
 
 1. **Clone o repositório**
    ```bash
@@ -184,6 +203,34 @@ api_IF/
 5. **Acesse a aplicação**
    - API: `http://localhost:5000`
    - Documentação: `http://localhost:5000/docs`
+
+#### Opção 2: Execução com Docker
+
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/wchrLeonardo/API-IF-COMPASS.git
+   cd API-IF-COMPASS
+   ```
+
+2. **Inicie os containers com Docker Compose**
+   ```bash
+   docker-compose up
+   ```
+   
+   Para executar em segundo plano:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Acesse a aplicação**
+   - API: `http://localhost:5000`
+   - Documentação: `http://localhost:5000/docs`
+   - MongoDB: disponível na porta `27017`
+
+4. **Para interromper os containers**
+   ```bash
+   docker-compose down
+   ```
 
 ---
 
@@ -324,15 +371,58 @@ MONGODB_URI=mongodb://localhost:27017/api_if_compass
 
 # Outras configurações
 NODE_ENV=development
+
+# Open Finance (opcional)
+VALID_API_KEYS=chave1,chave2,chave3
 ```
+
+### Docker e Docker Compose
+
+O projeto inclui configuração para Docker, permitindo execução em ambientes isolados:
+
+**docker-compose.yml:**
+```yaml
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000" 
+    volumes:
+      - .:/usr/src/app 
+    environment:
+      - MONGO_URI=mongodb://mongo-db:27017/minha-if-db
+    depends_on:
+      - mongo-db
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017" 
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+```
+
+**Benefícios do Docker:**
+- Ambiente consistente entre desenvolvimento e produção
+- MongoDB pré-configurado com persistência de dados
+- Hot-reload para desenvolvimento
+- Sem necessidade de instalar MongoDB localmente
 
 ### Scripts Disponíveis
 
 ```bash
+# Execução Local
 npm start          # Inicia em produção
 npm run dev        # Inicia em desenvolvimento com nodemon
 npm test           # Executa testes (quando implementados)
 npm run lint       # Verifica código com ESLint
+
+# Docker
+docker-compose up       # Inicia API e MongoDB
+docker-compose down     # Para os serviços
+docker-compose logs     # Visualiza logs dos containers
 ```
 
 ---
