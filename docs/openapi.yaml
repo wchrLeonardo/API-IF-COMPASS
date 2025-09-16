@@ -798,10 +798,10 @@ components:
       in: header
       description: |
         Chave de API para autenticação em endpoints Open Finance.
-        
+
         Esta chave deve ser fornecida no cabeçalho `x-api-key` para acessar 
         dados compartilhados e outros recursos protegidos da API Open Finance.
-        
+
   schemas:
     Customer:
       type: object
