@@ -84,14 +84,6 @@ class ConsentService {
                 }
             },
             {
-                $lookup: {
-                    from: 'accounts',
-                    localField: 'sourceAccounts',
-                    foreignField: '_id',
-                    as: 'sourceAccounts'
-                }
-            },
-            {
                 $unwind: '$currentAccount'
             }
         ])

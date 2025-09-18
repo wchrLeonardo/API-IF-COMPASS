@@ -40,7 +40,7 @@ A documentação está organizada por tags que representam os principais recurso
 |-----|-----------|-----------|
 | **Customers** | Gestão de clientes | 5 endpoints |
 | **Accounts** | Gestão de contas bancárias | 6 endpoints |
-| **Transactions** | Operações financeiras | 3 endpoints |
+| **Transactions** | Operações financeiras | 4 endpoints |
 | **Consents** | Gerenciamento de permissões | 5 endpoints |
 | **OpenFinance** | Compartilhamento de dados | 1 endpoint |
 
@@ -93,6 +93,7 @@ Todos os módulos da API estão completamente documentados:
 - `POST /transactions/accounts/{id}` - Nova transação
 - `GET /transactions/accounts/{id}` - Listar transações
 - `GET /transactions/{id}` - Detalhes da transação
+- `POST /transfer/transactions/accounts/{id}` - Transferir fundos entre contas
 
 ### 🔐 Consents (Consentimentos)
 - `POST /consents` - Criar consentimento

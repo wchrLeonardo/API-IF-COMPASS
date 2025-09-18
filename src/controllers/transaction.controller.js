@@ -35,6 +35,19 @@ class TransactionController {
             next(error);
         }
     }
+    transferFunds = async (req, res, next) => {
+        try {
+            const { id_account } = req.params;
+            const { branch_destination, number_destination, amount } = req.body;
+            if (!branch_destination || !number_destination || !amount) {
+                return res.status(400).json({ message: "Branch, account number, and amount are required for transfer." });
+            }
+            const transferResult = await transactionService.transferFunds(id_account, branch_destination, number_destination, amount);
+            res.status(200).json(transferResult);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new TransactionController();

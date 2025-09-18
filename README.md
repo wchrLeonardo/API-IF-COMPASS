@@ -284,6 +284,7 @@ api_IF/
 | `POST` | `/transactions/accounts/{id}` | Cria transação | ✅ |
 | `GET` | `/transactions/accounts/{id}` | Lista transações da conta | ✅ |
 | `GET` | `/transactions/{id}` | Busca transação por ID | ✅ |
+| `POST` | `/transfer/transactions/accounts/{id}` | Transfere fundos entre contas | ✅ |
 
 ### 🔐 Consentimentos
 
@@ -353,6 +354,18 @@ curl -X POST http://localhost:5000/transactions/accounts/acc_001 \
     "type": "credit",
     "description": "Depósito inicial",
     "category": "deposit"
+  }'
+```
+
+### Transferir Fundos
+
+```bash
+curl -X POST http://localhost:5000/transfer/transactions/accounts/acc_001 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "branch_destination": "1234",
+    "number_destination": "567890",
+    "amount": 500.00
   }'
 ```
 

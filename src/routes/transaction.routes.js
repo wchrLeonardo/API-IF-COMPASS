@@ -9,4 +9,6 @@ transactionRoutes.get('/transactions/accounts/:id_account', transactionControlle
 
 transactionRoutes.get('/transactions/:id', transactionController.getById);
 
+transactionRoutes.post('/transfer/transactions/accounts/:id_account', transactionController.transferFunds);
+
 export default transactionRoutes;

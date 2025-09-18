@@ -5,7 +5,7 @@ import { NotFoundError, BadRequestError } from '../exceptions/api-errors.excepti
 const transactionStrategies = {
     credit: (balance, amount) => balance + amount,
     debit: (balance, amount) => {
-        if (balance < amount) throw new BadRequestError("Saldo insuficiente.");
+        if (balance < amount) throw new BadRequestError("Insufficient funds for this debit transaction.");
         return balance - amount;
     },
 };
@@ -60,6 +60,66 @@ class TransactionService {
             totalPages: Math.ceil(totalTransactions / limit),
             totalTransactions
         }
+    }
+    async transferFunds(accountId, branchDestination, numberDestination, amount) {
+        const account = await Account.findById(accountId);
+        if (!account) {
+            throw new NotFoundError("Account not exists.");
+        }
+        const destinationAccount = await Account.findOne({ branch: branchDestination, number: numberDestination });
+        if (!destinationAccount) {
+            throw new NotFoundError("Destination account not found.");
+        }
+        if (account._id === destinationAccount._id) {
+            throw new BadRequestError("Cannot transfer to the same account.");
+        }
+
+        const strategyDebit = transactionStrategies["debit"];
+        account.balance = strategyDebit(account.balance, amount);
+        account.transactions.push(transferRemittance._id);
+
+        const transferRemittance = await Transaction.create({
+            type: "debit",
+            amount: amount,
+            account: accountId,
+            category: "transfer",
+            description: `Transfer to ${destinationAccount.owner} account - ${destinationAccount.number} at branch ${destinationAccount.branch}`,
+        });
+
+        const strategyCredit = transactionStrategies["credit"];
+        destinationAccount.balance = strategyCredit(destinationAccount.balance, amount);
+        destinationAccount.transactions.push(transferReceipt._id);
+
+        const transferReceipt = await Transaction.create({
+            type: "credit",
+            amount: amount,
+            account: destinationAccount._id,
+            category: "transfer",
+            description: `Transfer from ${account.owner} account - ${account.number} at branch ${account.branch}`,
+        });
+
+
+        await account.save();
+        await destinationAccount.save();
+
+        return {
+            message: "Transfer successful",
+            from: {
+                accountId: account._id,
+                type: account.type,
+                number: account.number,
+                owner: account.owner,
+                current_balance: account.balance,
+            },
+            to: {
+                accountId: destinationAccount._id,
+                type: destinationAccount.type,
+                number: destinationAccount.number,
+                owner: destinationAccount.owner,
+                current_balance: destinationAccount.balance
+            },
+            debited: amount
+        };
     }
 }
 

@@ -620,6 +620,86 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /transfer/transactions/accounts/{id_account}:
+    parameters:
+      - name: id_account
+        in: path
+        required: true
+        description: ID da conta de origem
+        schema:
+          type: string
+    post:
+      tags:
+        - Transactions
+      summary: Transferir fundos
+      description: Realiza transferência de fundos entre contas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - branch_destination
+                - number_destination
+                - amount
+              properties:
+                branch_destination:
+                  type: string
+                  description: Agência da conta de destino
+                  example: "1234"
+                number_destination:
+                  type: string
+                  description: Número da conta de destino
+                  example: "567890"
+                amount:
+                  type: number
+                  format: float
+                  minimum: 0.01
+                  description: Valor a ser transferido
+                  example: 1500.50
+      responses:
+        "200":
+          description: Transferência realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Transferência realizada com sucesso"
+                  fromAccount:
+                    type: string
+                    example: "acc_001"
+                  toAccount:
+                    type: string
+                    example: "acc_002"
+                  amount:
+                    type: number
+                    example: 1500.50
+                  transactionId:
+                    type: string
+                    example: "txn_001"
+        "400":
+          description: Dados inválidos ou saldo insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /consents:
     post:
       tags:
