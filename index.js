@@ -1,5 +1,5 @@
+import 'dotenv/config';
 import express from 'express';
-import dotenv from 'dotenv';
 import connection from './src/config/mongodb-connect.config.js';
 import errorMiddleware from './src/middlewares/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
@@ -12,7 +12,6 @@ import transactionRoutes from './src/routes/transaction.routes.js';
 import consentRoutes from './src/routes/consent.routes.js';
 import openFinanceRoutes from './src/routes/open-finance.routes.js';
 
-dotenv.config();
 const app = express();
 app.use(express.json());
 
@@ -50,11 +49,11 @@ app.use('/docs/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
   customfavIcon: '/favicon.ico'
 }));
 
-app.use('/', customerRoutes);
-app.use('/', accountRoutes);
-app.use('/', transactionRoutes);
-app.use('/', consentRoutes);
-app.use('/', openFinanceRoutes);
+app.use('/open-finance', customerRoutes);
+app.use('/open-finance', accountRoutes);
+app.use('/open-finance', transactionRoutes);
+app.use('/open-finance', consentRoutes);
+app.use('/open-finance', openFinanceRoutes);
 
 app.use(errorMiddleware)
 
