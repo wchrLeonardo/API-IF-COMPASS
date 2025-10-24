@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import autoIncrementId from '../plugins/custom-auto-increment-id.plugin.js';
 
-const consentSchema = new mongoose.Schema({
+const externalConsentSchema = new mongoose.Schema({
      customer: {
         type: String,
         ref: 'Customer',
@@ -10,12 +10,12 @@ const consentSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['AUTHORIZED', 'REVOKED', 'UNAUTHORIZED'],
+        enum: ['AUTHORIZED', 'PENDING', 'REVOKED', 'UNAUTHORIZED'],
         default: 'UNAUTHORIZED',
     },
     permissions: [{
         type: String,
-        required: true,
+        required: false,
         enum: ['BALANCES_READ', 'TRANSACTIONS_READ']
     }],
     expirationDateTime: {
@@ -23,26 +23,22 @@ const consentSchema = new mongoose.Schema({
         default: () => 
             new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     },
-    currentAccount: {
+    sourceAccount: {
         type: String,
-        ref: 'Account',
-        required: true,
+        ref: 'Account', 
+        required: false,
     },
-    sourceAccounts: [{
-        type: String,
-        ref: 'Account'
-    }],
     apiKey: {
         type: String,
         required: false,
     }
 }, { timestamps: true });
 
-consentSchema.plugin(autoIncrementId, { 
-    modelName: 'Consent', prefix: 'con_', paddingLength: 3 
+externalConsentSchema.plugin(autoIncrementId, { 
+    modelName: 'ExternalConsent', prefix: 'ext_con_', paddingLength: 3 
 });
 
-const Consent = mongoose.model("Consent", consentSchema);
+const ExternalConsent = mongoose.model("ExternalConsent", externalConsentSchema);
 
-export default Consent;
+export default ExternalConsent;
 
