@@ -13,21 +13,21 @@ const externalConsentSchema = new mongoose.Schema({
         enum: ['AUTHORIZED', 'PENDING', 'REVOKED', 'UNAUTHORIZED'],
         default: 'UNAUTHORIZED',
     },
-    permissions: [{
-        type: String,
-        required: false,
-        enum: ['BALANCES_READ', 'TRANSACTIONS_READ']
-    }],
+    // permissions: [{
+    //     type: String,
+    //     required: false,
+    //     enum: ['BALANCES_READ', 'TRANSACTIONS_READ', 'FULL_ACCESS'],
+    // }],
     expirationDateTime: {
         type: Date,
         default: () => 
             new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     },
-    sourceAccount: {
-        type: String,
-        ref: 'Account', 
-        required: false,
-    },
+    // sourceAccount: {
+    //     type: String,
+    //     ref: 'Account', 
+    //     required: false,
+    // },
     apiKey: {
         type: String,
         required: false,
