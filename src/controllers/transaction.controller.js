@@ -28,8 +28,9 @@ class TransactionController {
         try {
             const { id_account } = req.params;
             const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 10;
-            const transactions = await transactionService.getAllTransactionsByAccountId(id_account, page, limit);
+            const pageSize = parseInt(req.query.pageSize) || 10;
+            const { fromDate, toDate } = req.query;
+            const transactions = await transactionService.getAllTransactionsByAccountId(id_account, page, pageSize, fromDate, toDate);
             res.status(200).json(transactions);
         } catch (error) {
             next(error);

@@ -7,6 +7,7 @@ import crypto from "crypto";
 
 class ExternalConsentService {
     async createAndGenerateKey(consentData) {
+        try{
         const { customer } = consentData;
         
         const owner = await Customer.findById(customer);
@@ -24,54 +25,27 @@ class ExternalConsentService {
         });
         return {
             plainApiKey: plainApiKey,
-            userIdInChildApi: customer
+            userIdInChildApi: customer,
+            consentId: ExternalConsent._id
         };
+    } catch (error) {
+        throw new BadRequestError("Error creating external consent: " + error.message);
     }
+}
 
-    async revoke(consentId, customerId) {
+    async delete(consentId, customerId) {
+        try{
         const externalConsent = await ExternalConsent.findOne({ _id: consentId, customer: customerId });
         if (!externalConsent) {
             throw new NotFoundError("External consent not found");
         }
         await externalConsent.remove();
+        return { message: "External consent deleted successfully" };
+    } catch (error) {
+        throw new BadRequestError("Error deleting external consent: " + error.message);
+    }
     }
 
-    //  async getAllActiveConsentsByCustomerId(customerId) {
-    //     const consents = await Consent.aggregate([
-    //         {
-    //             $match: {
-    //                 customer: customerId,
-    //                 status: 'AUTHORIZED'
-    //             }
-    //         },
-    //         {
-    //             $sort: {
-    //                 createdAt: -1
-    //             }
-    //         },
-    //         {
-    //             $group: {
-    //                 _id: '$currentAccount',
-    //                 latestConsent: { $first: "$$ROOT" }
-    //             }
-    //         },
-    //         {
-    //             $replaceRoot: { newRoot: "$latestConsent" }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: 'accounts',
-    //                 localField: 'currentAccount',
-    //                 foreignField: '_id',
-    //                 as: 'currentAccount'
-    //             }
-    //         },
-    //         {
-    //             $unwind: '$currentAccount'
-    //         }
-    //     ])
-    //     return consents;
-    // }
 }
 
 export default new ExternalConsentService();

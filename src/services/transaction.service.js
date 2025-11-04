@@ -1,6 +1,7 @@
 import Transaction from '../models/transaction.model.js';
 import Account from '../models/account.model.js';
 import { NotFoundError, BadRequestError } from '../exceptions/api-errors.exception.js';
+import { Query } from 'mongoose';
 
 const transactionStrategies = {
     credit: (balance, amount) => balance + amount,
@@ -46,18 +47,26 @@ class TransactionService {
         }
         return transaction;
     }
-    async getAllTransactionsByAccountId(accountId, page = 1, limit = 20) {
-        const skip = (page - 1) * limit;
-        const transactions = await Transaction.find({ account: accountId })
+    async getAllTransactionsByAccountId(accountId, page = 1, pageSize = 10, fromDate = null, toDate = null) {
+        const skip = (page - 1) * pageSize;
+        const query = { account: accountId };
+
+        if (fromDate || toDate) {
+            query.createdAt = {};
+            if (fromDate) query.createdAt.$gte = new Date(fromDate);
+            if (toDate) query.createdAt.$lte = new Date(toDate);
+        }
+
+        const transactions = await Transaction.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(pageSize);
 
-        const totalTransactions = await Transaction.countDocuments({ account: accountId });
+        const totalTransactions = await Transaction.countDocuments(query);
         return {
             transactions,
             current_page: page,
-            totalPages: Math.ceil(totalTransactions / limit),
+            totalPages: Math.ceil(totalTransactions / pageSize),
             totalTransactions
         }
     }

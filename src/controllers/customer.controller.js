@@ -93,7 +93,7 @@ class CustomerController {
 
     async handleControlFConnection(connectionId, customerId, callbackUrl) {
         try{
-            const { plainApiKey, userIdInChildApi } = await externalConsentService.createAndGenerateKey({ customer: customerId });
+            const { plainApiKey, userIdInChildApi, consentId } = await externalConsentService.createAndGenerateKey({ customer: customerId });
             if(!plainApiKey || !userIdInChildApi){
                 throw new Error("Failed to create external consent and generate API key");
             } 
@@ -101,7 +101,8 @@ class CustomerController {
             const response = await axios.patch(callbackUrl, {
                 apiKey: plainApiKey,
                 userIdInChildApi,
-                connectionId
+                connectionId,
+                consentId
             });
 
             if(response.status !== 200){
