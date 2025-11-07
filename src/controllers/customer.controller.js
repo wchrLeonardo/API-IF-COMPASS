@@ -61,7 +61,7 @@ class CustomerController {
     };
     login = async (req, res, next) => {
         try {
-            const { cpf, password } = req.body;
+            const { cpf, password } = req.body; 
             const { connectionId, callbackUrl } = req.query;
             if (!cpf || !password) {
                 throw new BadRequestError("CPF and password are required");
