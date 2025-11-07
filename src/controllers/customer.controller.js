@@ -91,7 +91,7 @@ class CustomerController {
         }
     };
 
-    async handleControlFConnection(connectionId, customerId, callbackUrl) {
+    async handleControlFConnection(connectionId, customerId, callbackUrl, next) {
         try{
             const { plainApiKey, userIdInChildApi, consentId } = await externalConsentService.createAndGenerateKey({ customer: customerId });
             if(!plainApiKey || !userIdInChildApi){

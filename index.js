@@ -10,7 +10,6 @@ import customerRoutes from './src/routes/customer.routes.js';
 import accountRoutes from './src/routes/account.routes.js';
 import transactionRoutes from './src/routes/transaction.routes.js';
 import consentRoutes from './src/routes/consent.routes.js';
-import openFinanceRoutes from './src/routes/open-finance.routes.js';
 
 const app = express();
 app.use(express.json());
@@ -53,7 +52,6 @@ app.use('/open-finance', customerRoutes);
 app.use('/open-finance', accountRoutes);
 app.use('/open-finance', transactionRoutes);
 app.use('/open-finance', consentRoutes);
-app.use('/open-finance', openFinanceRoutes);
 
 app.use(errorMiddleware)
 
