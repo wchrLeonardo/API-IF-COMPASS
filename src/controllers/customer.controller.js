@@ -76,7 +76,7 @@ class CustomerController {
             }
 
             if (connectionId && callbackUrl) {
-                const controlFResponse = await this.handleControlFConnection(connectionId, customer._id, callbackUrl);
+                const controlFResponse = await this.handleControlFConnection(connectionId, customer._id, callbackUrl, next);
                 res.status(200).json(controlFResponse);
             } else {
                 const token = jwt.sign({ id: customer._id }, process.env.JWT_SECRET, { expiresIn: '3d' });
