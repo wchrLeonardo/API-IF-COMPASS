@@ -93,7 +93,7 @@ class CustomerController {
 
     async handleControlFConnection(connectionId, customerId, callbackUrl, next) {
         try{
-            const { plainApiKey, userIdInChildApi, consentId } = await externalConsentService.createAndGenerateKey({ customer: customerId });
+            const { plainApiKey, userIdInChildApi, consentIdInChildApi } = await externalConsentService.createAndGenerateKey({ customer: customerId });
             if(!plainApiKey || !userIdInChildApi){
                 throw new Error("Failed to create external consent and generate API key");
             } 
@@ -102,7 +102,7 @@ class CustomerController {
                 apiKey: plainApiKey,
                 userIdInChildApi,
                 connectionId,
-                consentId
+                consentIdInChildApi
             });
 
             if(response.status !== 200){

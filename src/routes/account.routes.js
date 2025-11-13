@@ -5,7 +5,7 @@ const accountRoutes = Router();
 
 accountRoutes.post('/accounts/customers/:id_customer', accountController.create);
 
-accountRoutes.get('/accounts/customers/:id_customer', accountController.getAllByCustomerId);
+accountRoutes.get('/customers/:id_customer/accounts', accountController.getAllByCustomerId);
 
 accountRoutes.get('/accounts/:id', accountController.getById);
 

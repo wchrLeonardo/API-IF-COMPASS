@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { UnauthorizedError, ForbiddenError } from '../exceptions/api-errors.exception.js'; 
 import ExternalConsent from '../models/external-consent.model.js'; 
 
@@ -21,16 +22,27 @@ export const authenticateRequest = async (req, res, next) => {
 
     if (apiKeyHeader) {
         try {
-            const consent = await ExternalConsent.findOne({ apiKey: apiKeyHeader });
+            const consents = await ExternalConsent.find({ 
+                status: 'AUTHORIZED',
+                expirationDateTime: { $gt: new Date() } 
+            });
 
-            if (!consent || consent.status !== 'AUTHORIZED' || consent.expirationDateTime <= new Date()) {
-                 throw new ForbiddenError('API Key inválida, revogada ou expirada.');
+            let validConsent = null;
+            for (const consent of consents) {
+                const isMatch = bcrypt.compare(apiKeyHeader, consent.apiKey);
+                if (isMatch) {
+                    validConsent = consent;
+                    break;
+                }
+            }
+            if (!validConsent) {
+                 throw new ForbiddenError('API Key invalid, revoked, or expired.');
             }
             
             req.consentInfo = { 
-                consentId: consent._id, 
-                customerId: consent.customer, 
-                permissions: consent.permissions 
+                consentId: validConsent._id, 
+                customerId: validConsent.customer, 
+                permissions: validConsent.permissions 
             }; 
             return next(); 
 
@@ -38,5 +50,5 @@ export const authenticateRequest = async (req, res, next) => {
             return next(error); 
         }
     }
-    return next(new UnauthorizedError('Autenticação necessária. Forneça um Token JWT ou API Key válida.'));
+    return next(new UnauthorizedError('Authentication required. Provide a valid JWT Token or API Key.'));
 };

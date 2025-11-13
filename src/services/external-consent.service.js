@@ -19,14 +19,15 @@ class ExternalConsentService {
         const salt = await bcrypt.genSalt(10);
         const apiKeyHash = await bcrypt.hash(plainApiKey, salt);
 
-        await ExternalConsent.create({ customer: customer,
+        const newExternalConsent = await ExternalConsent.create({ 
+           customer: customer,
            apiKey: apiKeyHash,
            status: 'AUTHORIZED'
         });
         return {
             plainApiKey: plainApiKey,
             userIdInChildApi: customer,
-            consentId: ExternalConsent._id
+            consentIdInChildApi: newExternalConsent._id
         };
     } catch (error) {
         throw new BadRequestError("Error creating external consent: " + error.message);
