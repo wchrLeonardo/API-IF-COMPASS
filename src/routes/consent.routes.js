@@ -14,6 +14,7 @@ consentRoutes.patch('/consents/:id/customer/:id_customer/revoke', consentControl
 
 consentRoutes.patch('/consents/customer/:id_customer/revoke-all', consentController.revokeAllByCustomerId);
 
+// External Consents
 consentRoutes.delete('/consents/:id_external_consent/customer/:id_customer', externalConsentController.revokeExternalConsent);
 
 export default consentRoutes;

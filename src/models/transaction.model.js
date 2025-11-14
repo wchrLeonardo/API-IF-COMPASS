@@ -16,7 +16,10 @@ const transactionSchema = new mongoose.Schema({
     required: true
   },
   category: {
-    type: String
+    required: true,
+    type: String,
+    default: 'Outros',
+    enum: ['Renda', 'Poupar', 'Despesa Fixa', 'Lazer', 'Imprevistos', 'Outros']
   },
   account: {
     type: String,

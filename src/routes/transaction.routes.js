@@ -5,7 +5,7 @@ const transactionRoutes = Router();
 
 transactionRoutes.post('/transactions/accounts/:id_account', transactionController.create);
 
-transactionRoutes.get('/transactions/accounts/:id_account', transactionController.getAllByAccountId);
+transactionRoutes.get('/accounts/:id_account/transactions', transactionController.getAllByAccountId);
 
 transactionRoutes.get('/transactions/:id', transactionController.getById);
 
